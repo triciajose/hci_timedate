@@ -34,4 +34,17 @@
         android:layout_alignRight="@+id/android_button"
         android:layout_alignEnd="@+id/android_button" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Interface"
+        android:id="@+id/new_button"
+        android:onClick="startNew"
+        android:layout_marginTop="51dp"
+        android:layout_below="@+id/ios_button"
+        android:layout_alignRight="@+id/ios_button"
+        android:layout_alignEnd="@+id/ios_button"
+        android:layout_alignLeft="@+id/ios_button"
+        android:layout_alignStart="@+id/ios_button" />
+
 </RelativeLayout>

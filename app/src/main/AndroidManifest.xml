@@ -24,6 +24,10 @@
             android:name=".iOSActivity"
             android:label="@string/title_activity_i_os" >
         </activity>
+        <activity
+            android:name=".NewActivity"
+            android:label="@string/title_activity_new" >
+        </activity>
     </application>
 
 </manifest>

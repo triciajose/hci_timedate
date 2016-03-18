@@ -11,6 +11,8 @@ public class MainActivity extends ActionBarActivity {
 
     public final static String GOAL_DATES = "com.mycompany.myfirstapp.DATES";
     public final static String GOAL_TIMES = "com.mycompany.myfirstapp.TIMES";
+    String dates = "01-01-2016, 29-05-1991";
+    String times = "08:07 AM, 10:03 PM";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +44,7 @@ public class MainActivity extends ActionBarActivity {
 
     public void startAndroid(View view) {
         Intent intent = new Intent(this, AndroidActivity.class);
-        String dates = "01-01-2016, 29-05-1991";
-        String times = "08:07 AM, 10:03 PM";
+
         intent.putExtra(GOAL_DATES, dates);
         intent.putExtra(GOAL_TIMES, times);
         startActivity(intent);
@@ -51,8 +52,13 @@ public class MainActivity extends ActionBarActivity {
 
     public void startiOS(View view) {
         Intent intent = new Intent(this, iOSActivity.class);
-        String dates = "01-01-2016, 29-05-1991";
-        String times = "08:07 AM, 10:03 PM";
+        intent.putExtra(GOAL_DATES, dates);
+        intent.putExtra(GOAL_TIMES, times);
+        startActivity(intent);
+    }
+
+    public void startNew(View view) {
+        Intent intent = new Intent(this, NewActivity.class);
         intent.putExtra(GOAL_DATES, dates);
         intent.putExtra(GOAL_TIMES, times);
         startActivity(intent);

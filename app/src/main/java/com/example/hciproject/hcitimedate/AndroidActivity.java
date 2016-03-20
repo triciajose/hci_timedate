@@ -16,6 +16,7 @@ import android.widget.TimePicker;
 import android.content.Intent;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.CountDownTimer;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,18 +25,23 @@ import java.io.OutputStreamWriter;
 import java.util.Calendar;
 
 
+
 public class AndroidActivity extends ActionBarActivity implements
         View.OnClickListener {
 
         public String[] goal_dates;
         public String[] goal_times;
         public int counter = 0;
-        public int last = 1;
+        public int secs;
+        //public int last = 1;
         Button btnDatePicker, btnTimePicker, ok;
         TextView txtDate, txtTime, timer;
         long startTime, endTime;
         private int mYear, mMonth, mDay, mHour, mMinute;
         OutputStreamWriter outputWriter;
+        CountDownTimer ctimer;
+        DatePickerDialog datePickerDialog;
+        TimePickerDialog timePickerDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +77,8 @@ public class AndroidActivity extends ActionBarActivity implements
         builder.setMessage(getTitle(counter));
         builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                startTime = System.nanoTime();
+                ctimer = new MyCountDown(11000, 1000);
                 // TODO: start timer
                 dialog.dismiss();
             }
@@ -111,21 +119,20 @@ public class AndroidActivity extends ActionBarActivity implements
         if (v == btnDatePicker) {
             // Get Current Date
             startTime = System.nanoTime();
+            ctimer = new MyCountDown(11000, 1000);
             final Calendar c = Calendar.getInstance();
             mYear = c.get(Calendar.YEAR);
             mMonth = c.get(Calendar.MONTH);
             mDay = c.get(Calendar.DAY_OF_MONTH);
 
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+            datePickerDialog = new DatePickerDialog(this,
                     new DatePickerDialog.OnDateSetListener() {
 
                         @Override
                         public void onDateSet(DatePicker view, int year,
                                               int monthOfYear, int dayOfMonth) {
-
-                            txtDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-
+                            txtDate.setText(getMonth(monthOfYear +1) + " " + dayOfMonth + ", "  + year);
                         }
                     }, mYear, mMonth, mDay);
             datePickerDialog.show();
@@ -138,7 +145,7 @@ public class AndroidActivity extends ActionBarActivity implements
             mMinute = c.get(Calendar.MINUTE);
 
             // Launch Time Picker Dialog
-            TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+            timePickerDialog = new TimePickerDialog(this,
                     new TimePickerDialog.OnTimeSetListener() {
 
                         @Override
@@ -158,7 +165,6 @@ public class AndroidActivity extends ActionBarActivity implements
         }
         if (v == ok)
         {
-
             //Check if accurate
             endTime = System.nanoTime();
             counter++;
@@ -205,11 +211,11 @@ public class AndroidActivity extends ActionBarActivity implements
             }
 //            Intent intent = getIntent();
             if (counter < goal_times.length) {
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage(getTitle(counter));
                 builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        startTime = System.nanoTime();
                         // TODO: start timer
                         dialog.dismiss();
                     }
@@ -280,5 +286,66 @@ public class AndroidActivity extends ActionBarActivity implements
         String datetime = month + " " + dayAndYear + ", " + goal_times[counter];
 
         return datetime;
+    }
+
+    private class MyCountDown extends CountDownTimer
+    {
+        public MyCountDown(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+            //frameAnimation.start();
+            start();
+        }
+
+        @Override
+        public void onFinish() {
+            secs = 10;
+            counter++;
+            if (counter < goal_times.length) {
+                if (datePickerDialog != null) {
+                    datePickerDialog.dismiss();
+                }
+                else if (timePickerDialog!=null)
+                {
+                    timePickerDialog.dismiss();
+                }//timePickerDialog.dismiss();
+                AlertDialog.Builder builder = new AlertDialog.Builder(AndroidActivity.this);
+                builder.setMessage(getTitle(counter));
+                builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        startTime = System.nanoTime();
+                        // TODO: start timer
+                        dialog.dismiss();
+                    }
+                });
+                builder.create();
+                builder.show();
+
+                getSupportActionBar().setTitle(getTitle(counter));
+
+                txtTime.setText("");
+                txtDate.setText("");
+            }
+            else
+            {
+                try {
+                    if (outputWriter != null) {
+                        outputWriter.close();
+                    }
+                }
+                catch (IOException e)
+                {
+
+                }
+//                Intent intent = new Intent();
+                setResult(RESULT_OK);
+                finish();
+            }
+        }
+
+        @Override
+        public void onTick(long duration) {
+            //cd.setText(String.valueOf(secs));
+            secs = secs - 1;
+        }
     }
 }

@@ -30,28 +30,14 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
     public int counter = 0;
     OutputStreamWriter outputWriter;
     TextView txtDate, txtTime, timer;
-    Button ok;
+    Button btnDatePicker, btnTimePicker, ok;
+    private int mYear, mMonth, mDay, mHour, mMinute;
     long startTime, endTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
-        goal_dates = intent.getStringExtra(MainActivity.GOAL_DATES).split(",");
-        goal_times = intent.getStringExtra(MainActivity.GOAL_TIMES).split(",");
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getTitle(counter));
-        builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // TODO: start timer
-                dialog.dismiss();
-            }
-        });
-        builder.create();
-        builder.show();
-        getSupportActionBar().setTitle(getTitle(counter));
-
+        setTheme(android.R.style.Theme_Holo_Light_DarkActionBar);
         setContentView(R.layout.activity_i_os);
         try {
             File output = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "mytextfile.txt");
@@ -65,11 +51,36 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
         } catch (Exception e) {
             e.printStackTrace();
         }
-        ok = (Button) findViewById(R.id.ok);
+        //timer = new Chronometer(MainActivity.this);
+
+        btnDatePicker=(Button)findViewById(R.id.btn_date_ios);
+        btnTimePicker=(Button)findViewById(R.id.btn_time_ios);
+        ok = (Button) findViewById(R.id.ok_ios);
         txtDate=(TextView)findViewById(R.id.in_date_ios);
         txtTime=(TextView)findViewById(R.id.in_time_ios);
-        ok.setOnClickListener(this);
 
+        //timer = (TextView) findViewById(R.id.timer);
+
+        Intent intent = getIntent();
+        goal_dates = intent.getStringExtra(MainActivity.GOAL_DATES).split(",");
+        goal_times = intent.getStringExtra(MainActivity.GOAL_TIMES).split(",");
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getTitle(counter));
+        builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                startTime = System.nanoTime();
+                // TODO: start timer
+                dialog.dismiss();
+            }
+        });
+        builder.create();
+        builder.show();
+        getSupportActionBar().setTitle(getTitle(counter));
+
+        btnDatePicker.setOnClickListener(this);
+        btnTimePicker.setOnClickListener(this);
+        ok.setOnClickListener(this);
     }
 
     @Override
@@ -95,9 +106,56 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
     }
     public void onClick(View v) {
 
+        if (v == btnDatePicker) {
+            // Get Current Date
+            startTime = System.nanoTime();
+            final Calendar c = Calendar.getInstance();
+            mYear = c.get(Calendar.YEAR);
+            mMonth = c.get(Calendar.MONTH);
+            mDay = c.get(Calendar.DAY_OF_MONTH);
+
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+
+                    new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year,
+                                              int monthOfYear, int dayOfMonth) {
+                            txtDate.setText(getMonth(monthOfYear +1) + " " + dayOfMonth + ", "  + year);
+
+                        }
+                    }, mYear, mMonth, mDay);
+            datePickerDialog.show();
+        }
+        if (v == btnTimePicker) {
+
+            // Get Current Time
+            final Calendar c = Calendar.getInstance();
+            mHour = c.get(Calendar.HOUR_OF_DAY);
+            mMinute = c.get(Calendar.MINUTE);
+
+            // Launch Time Picker Dialog
+            TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                    new TimePickerDialog.OnTimeSetListener() {
+
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay,
+                                              int minute) {
+                            if (hourOfDay > 12) {
+                                hourOfDay = hourOfDay - 12;
+                                txtTime.setText(hourOfDay + ":" + minute + " PM");
+                            }
+                            else
+                            {
+                                txtTime.setText(hourOfDay + ":" + minute + " AM");
+                            }
+                        }
+                    }, mHour, mMinute, false);
+            timePickerDialog.show();
+        }
+
         if (v == ok)
         {
-
             //Check if accurate
             endTime = System.nanoTime();
             counter++;
@@ -148,6 +206,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
                 builder.setMessage(getTitle(counter));
                 builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        startTime = System.nanoTime();
                         // TODO: start timer
                         dialog.dismiss();
                     }

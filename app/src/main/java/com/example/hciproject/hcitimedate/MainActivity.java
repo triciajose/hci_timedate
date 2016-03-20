@@ -15,6 +15,7 @@ public class MainActivity extends ActionBarActivity {
 
     public final static String GOAL_DATES = "com.mycompany.myfirstapp.DATES";
     public final static String GOAL_TIMES = "com.mycompany.myfirstapp.TIMES";
+    public final static int TASK_NO = 1;
     //month-date-year
     String dates = "01-01-2016,05-29-2016,03-23-2016,04-17-2016,11-30-2016,08-02-2016,10-01-2016,09-14-2016,04-01-2016,06-11-2016";
     String times = "08:07 AM,10:03 PM,6:00 PM,2:30 PM,11:45 AM,8:00 AM,12:00 PM,7:00 PM,11:11 AM,1:15 PM";
@@ -86,7 +87,6 @@ public class MainActivity extends ActionBarActivity {
         Log.v("first",String.valueOf(first));
         Log.v("second", String.valueOf(second));
         Log.v("third", String.valueOf(third));
-
         startRun(1);
     }
     public void startTask2(View view) {
@@ -119,7 +119,6 @@ public class MainActivity extends ActionBarActivity {
             default:
                 break;
         }
-
     }
 
     @Override

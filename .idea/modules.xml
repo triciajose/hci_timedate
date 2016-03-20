@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/HCITimeDate.iml" filepath="$PROJECT_DIR$/HCITimeDate.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hci_timedate.iml" filepath="$PROJECT_DIR$/hci_timedate.iml" />
     </modules>
   </component>
 </project>

@@ -16,8 +16,8 @@ public class MainActivity extends ActionBarActivity {
     public final static String GOAL_DATES = "com.mycompany.myfirstapp.DATES";
     public final static String GOAL_TIMES = "com.mycompany.myfirstapp.TIMES";
     //month-date-year
-    String dates = "01-01-2016,05-29-1991";
-    String times = "08:07 AM,10:03 PM";
+    String dates = "01-01-2016,05-29-2016,03-23-2016,04-17-2016,11-30-2016,08-02-2016,10-01-2016,09-14-2016,04-01-2016,06-11-2016";
+    String times = "08:07 AM,10:03 PM,6:00 PM,2:30 PM,11:45 AM,8:00 AM,12:00 PM,7:00 PM,11:11 AM,1:15 PM";
     static final int FIRST_REQUEST = 1;  // The request code
     int ANDROID = 10;
     int IOS = 20;
@@ -59,7 +59,6 @@ public class MainActivity extends ActionBarActivity {
 
     public void startAndroid(int request) {
         Intent intent = new Intent(this, AndroidActivity.class);
-
         intent.putExtra(GOAL_DATES, dates);
         intent.putExtra(GOAL_TIMES, times);
         startActivityForResult(intent, request);
@@ -79,7 +78,18 @@ public class MainActivity extends ActionBarActivity {
         startActivityForResult(intent, request);
     }
 
-    public void start(View view) {
+    public void startTask1(View view) {
+        order = shuffleArray(order);
+        first = order[0];
+        second = order[1];
+        third = order[2];
+        Log.v("first",String.valueOf(first));
+        Log.v("second", String.valueOf(second));
+        Log.v("third", String.valueOf(third));
+
+        startRun(1);
+    }
+    public void startTask2(View view) {
         order = shuffleArray(order);
         first = order[0];
         second = order[1];
@@ -88,10 +98,10 @@ public class MainActivity extends ActionBarActivity {
         Log.v("second",String.valueOf(second));
         Log.v("third",String.valueOf(third));
 
-        startRun();
+        startRun(2);
     }
 
-    public void startRun() {
+    public void startRun(int run) {
 
         switch(first) {
             case 1:

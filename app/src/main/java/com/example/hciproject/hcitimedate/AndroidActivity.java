@@ -14,6 +14,8 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.content.Intent;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -65,6 +67,16 @@ public class AndroidActivity extends ActionBarActivity implements
         goal_dates = intent.getStringExtra(MainActivity.GOAL_DATES).split(",");
         goal_times = intent.getStringExtra(MainActivity.GOAL_TIMES).split(",");
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getTitle(counter));
+        builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // TODO: start timer
+                dialog.dismiss();
+            }
+        });
+        builder.create();
+        builder.show();
         getSupportActionBar().setTitle(getTitle(counter));
 
         btnDatePicker.setOnClickListener(this);
@@ -193,6 +205,17 @@ public class AndroidActivity extends ActionBarActivity implements
             }
 //            Intent intent = getIntent();
             if (counter < goal_times.length) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(getTitle(counter));
+                builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // TODO: start timer
+                        dialog.dismiss();
+                    }
+                });
+                builder.create();
+                builder.show();
 
                 getSupportActionBar().setTitle(getTitle(counter));
 

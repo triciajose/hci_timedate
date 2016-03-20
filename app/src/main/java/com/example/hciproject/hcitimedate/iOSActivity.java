@@ -1,7 +1,9 @@
 package com.example.hciproject.hcitimedate;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
@@ -38,6 +40,16 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
         goal_dates = intent.getStringExtra(MainActivity.GOAL_DATES).split(",");
         goal_times = intent.getStringExtra(MainActivity.GOAL_TIMES).split(",");
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getTitle(counter));
+        builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // TODO: start timer
+                dialog.dismiss();
+            }
+        });
+        builder.create();
+        builder.show();
         getSupportActionBar().setTitle(getTitle(counter));
 
         setContentView(R.layout.activity_i_os);
@@ -131,6 +143,17 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
             }
 //            Intent intent = getIntent();
             if (counter < goal_times.length) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(getTitle(counter));
+                builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // TODO: start timer
+                        dialog.dismiss();
+                    }
+                });
+                builder.create();
+                builder.show();
 
                 getSupportActionBar().setTitle(getTitle(counter));
 

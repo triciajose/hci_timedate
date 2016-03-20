@@ -9,42 +9,13 @@
         android:layout_height="wrap_content"
         android:id="@+id/textView" />
 
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Android Interface"
-        android:id="@+id/android_button"
-        android:layout_below="@+id/textView"
-        android:layout_toRightOf="@+id/textView"
-        android:layout_toEndOf="@+id/textView"
-        android:layout_marginTop="63dp"
-        android:onClick="startAndroid"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="iOS Interface"
-        android:id="@+id/ios_button"
-        android:onClick="startiOS"
-        android:layout_below="@+id/android_button"
-        android:layout_alignLeft="@+id/android_button"
-        android:layout_alignStart="@+id/android_button"
-        android:layout_marginTop="46dp"
-        android:layout_alignRight="@+id/android_button"
-        android:layout_alignEnd="@+id/android_button" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Interface"
-        android:id="@+id/new_button"
-        android:onClick="startNew"
-        android:layout_marginTop="51dp"
-        android:layout_below="@+id/ios_button"
-        android:layout_alignRight="@+id/ios_button"
-        android:layout_alignEnd="@+id/ios_button"
-        android:layout_alignLeft="@+id/ios_button"
-        android:layout_alignStart="@+id/ios_button" />
+        android:text="START"
+        android:id="@+id/start_button"
+        android:onClick="start"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

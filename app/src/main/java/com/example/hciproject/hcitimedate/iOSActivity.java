@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +29,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
     OutputStreamWriter outputWriter;
     TextView txtDate, txtTime, timer;
     Button ok;
+    long startTime, endTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +38,8 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
         goal_dates = intent.getStringExtra(MainActivity.GOAL_DATES).split(",");
         goal_times = intent.getStringExtra(MainActivity.GOAL_TIMES).split(",");
 
-        String datetime = goal_dates[counter] + ", " + goal_times[counter];
+        getSupportActionBar().setTitle(getTitle(counter));
 
-        getSupportActionBar().setTitle(datetime);
         setContentView(R.layout.activity_i_os);
         try {
             File output = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "mytextfile.txt");
@@ -82,5 +83,117 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
     }
     public void onClick(View v) {
 
+        if (v == ok)
+        {
+
+            //Check if accurate
+            endTime = System.nanoTime();
+            counter++;
+
+            long minutesElapsed = ((endTime - startTime)/1000000000)/60;
+            long secondsElapsed = (endTime - startTime)/1000000000;
+            long millisElapsed = ((endTime - startTime)%1000000000)/1000000;
+            String time = "";
+            if (minutesElapsed < 10)
+            {
+                time = time + "0" + minutesElapsed;
+            }
+            else
+            {
+                time = time + minutesElapsed;
+            }
+            if (secondsElapsed < 10)
+            {
+                time = time + ":0" + secondsElapsed;
+            }
+            else
+            {
+                time = time + ":" + secondsElapsed;
+            }
+            if (millisElapsed < 10)
+            {
+                time = time + ".00" + millisElapsed;
+            }
+            else if (millisElapsed < 100)
+            {
+                time = time + ".0" + millisElapsed;
+            }
+            else
+            {
+                time = time + "." +millisElapsed;
+            }
+            try {
+                outputWriter.write(time + "\n");
+            }
+            catch (Exception e)
+            {
+
+            }
+//            Intent intent = getIntent();
+            if (counter < goal_times.length) {
+
+                getSupportActionBar().setTitle(getTitle(counter));
+
+                txtTime.setText("");
+                txtDate.setText("");
+            }
+            else
+            {
+                try {
+                    if (outputWriter != null) {
+                        outputWriter.close();
+                    }
+                }
+                catch (IOException e)
+                {
+
+                }
+//                Intent intent = new Intent();
+                setResult(RESULT_OK);
+                finish();
+            }
+        }
+    }
+
+    public String getMonth(int month) {
+        String monthString;
+        switch (month) {
+            case 1:  monthString = "January";
+                break;
+            case 2:  monthString = "February";
+                break;
+            case 3:  monthString = "March";
+                break;
+            case 4:  monthString = "April";
+                break;
+            case 5:  monthString = "May";
+                break;
+            case 6:  monthString = "June";
+                break;
+            case 7:  monthString = "July";
+                break;
+            case 8:  monthString = "August";
+                break;
+            case 9:  monthString = "September";
+                break;
+            case 10: monthString = "October";
+                break;
+            case 11: monthString = "November";
+                break;
+            case 12: monthString = "December";
+                break;
+            default: monthString = "Invalid month";
+                break;
+        }
+        return monthString;
+    }
+
+    public String getTitle(int counter) {
+        String month = getMonth(Integer.parseInt(goal_dates[counter].split("-")[0]));
+        Log.v("month", month);
+        String dayAndYear = (goal_dates[counter].split("-")[1]) + ", " + (goal_dates[counter].split("-")[2]);
+        String datetime = month + " " + dayAndYear + ", " + goal_times[counter];
+
+        return datetime;
     }
 }

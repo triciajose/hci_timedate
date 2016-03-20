@@ -3,6 +3,7 @@ package com.example.hciproject.hcitimedate;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.graphics.LinearGradient;
@@ -41,9 +42,8 @@ public class NewActivity extends ActionBarActivity{
         goal_dates = intent.getStringExtra(MainActivity.GOAL_DATES).split(",");
         goal_times = intent.getStringExtra(MainActivity.GOAL_TIMES).split(",");
 
-        String datetime = goal_dates[counter] + ", " + goal_times[counter];
+        getSupportActionBar().setTitle(getTitle(counter));
 
-        getSupportActionBar().setTitle(datetime);
         dv = new DrawingView(this);
         setContentView(dv);
         mPaint = new Paint();
@@ -299,7 +299,7 @@ public class NewActivity extends ActionBarActivity{
             textPaint.setTextAlign(Align.CENTER);
             textPaint.setTextSize(getHeight() / 25);
 
-            String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "Novemeber", "December"};
+            String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
             String[] amorpm = {"AM", "PM"};
             canvas.drawText(months[selections[0]] + " " + Integer.toString(selections[1]), getWidth() / 4, getHeight() / 2 - titleSize, textPaint);
@@ -689,5 +689,47 @@ public class NewActivity extends ActionBarActivity{
             }
             return true;
         }
+    }
+
+    public String getMonth(int month) {
+        String monthString;
+        switch (month) {
+            case 1:  monthString = "January";
+                break;
+            case 2:  monthString = "February";
+                break;
+            case 3:  monthString = "March";
+                break;
+            case 4:  monthString = "April";
+                break;
+            case 5:  monthString = "May";
+                break;
+            case 6:  monthString = "June";
+                break;
+            case 7:  monthString = "July";
+                break;
+            case 8:  monthString = "August";
+                break;
+            case 9:  monthString = "September";
+                break;
+            case 10: monthString = "October";
+                break;
+            case 11: monthString = "November";
+                break;
+            case 12: monthString = "December";
+                break;
+            default: monthString = "Invalid month";
+                break;
+        }
+        return monthString;
+    }
+
+    public String getTitle(int counter) {
+        String month = getMonth(Integer.parseInt(goal_dates[counter].split("-")[0]));
+        Log.v("month", month);
+        String dayAndYear = (goal_dates[counter].split("-")[1]) + ", " + (goal_dates[counter].split("-")[2]);
+        String datetime = month + " " + dayAndYear + ", " + goal_times[counter];
+
+        return datetime;
     }
 }

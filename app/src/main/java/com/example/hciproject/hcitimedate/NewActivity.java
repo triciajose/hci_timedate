@@ -1,17 +1,15 @@
 package com.example.hciproject.hcitimedate;
 
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.MotionEvent;
 import android.app.Activity;
@@ -23,15 +21,17 @@ import android.graphics.Path;
 import android.content.Context;
 import android.graphics.Paint.Align;
 import android.graphics.Shader.TileMode;
+import android.os.Handler;
+//import android.widget.Button;
 
 
-
-public class NewActivity extends ActionBarActivity{
+public class NewActivity extends ActionBarActivity {
 
     public String[] goal_dates;
     public String[] goal_times;
+    public boolean left;
     public int counter = 0;
-
+    String participant_id;
 
     DrawingView dv ;
     private Paint mPaint;
@@ -41,9 +41,15 @@ public class NewActivity extends ActionBarActivity{
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
 
+        intent.putExtra("ID",participant_id);
         goal_dates = intent.getStringExtra(MainActivity.GOAL_DATES).split(",");
         goal_times = intent.getStringExtra(MainActivity.GOAL_TIMES).split(",");
-
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            left = extras.getBoolean(MainActivity.LEFT);
+            Log.v("left",String.valueOf(left));
+        }
+        //left = intent.getBooleanExtra(MainActivity.LEFT, );
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getTitle(counter));
         builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
@@ -56,6 +62,7 @@ public class NewActivity extends ActionBarActivity{
         builder.show();
         getSupportActionBar().setTitle(getTitle(counter));
 
+
         dv = new DrawingView(this);
         setContentView(dv);
         mPaint = new Paint();
@@ -66,6 +73,8 @@ public class NewActivity extends ActionBarActivity{
         mPaint.setStrokeJoin(Paint.Join.ROUND);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setStrokeWidth(12);
+
+
     }
 
     public class DrawingView extends View {
@@ -104,6 +113,7 @@ public class NewActivity extends ActionBarActivity{
         float daysSpacing;
         float ampmSpacing;
         float minuteSpacing;
+        private float ruleSize;
 
         private int swiping;
         private float startTouchX, startTouchY;
@@ -120,6 +130,12 @@ public class NewActivity extends ActionBarActivity{
         private long startTouchTime;
         private long releaseTime;
         private boolean justReleased;
+
+        private int[] daysPerMonth;
+
+        private boolean startTouchTimerCancelled;
+
+        private boolean leftHanded;
 
         public DrawingView(Context c) {
             super(c);
@@ -181,6 +197,18 @@ public class NewActivity extends ActionBarActivity{
             releaseTime = 0;
             justReleased = false;
 
+            startTouchTimerCancelled = false;
+
+            daysPerMonth = new int[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+            if (left) {
+                leftHanded = true;
+            }
+            else
+            {
+                leftHanded = false;
+            }
+
 
         }
 
@@ -196,13 +224,7 @@ public class NewActivity extends ActionBarActivity{
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
 
-            if(justReleased && releaseTime - System.currentTimeMillis() > 200)
-            {
-                justReleased = false;
-                touchRegion++;
-                if(touchRegion == 6)
-                    touchRegion = 0;
-            }
+
 
 
             mWidth = getWidth();
@@ -226,96 +248,227 @@ public class NewActivity extends ActionBarActivity{
             titleSize = (float)getHeight() / 30;
             titleSpacing = (float)1.5*titleSize;
             numberSize = (float)getHeight() / 45;
-            int ruleSize = 8;
 
-            topOffset = 2 * titleSpacing;
+
+            float regionStart;
+            float mainTimeStartPos;
+            if(leftHanded) {
+                regionStart = 0;
+                mainTimeStartPos = getWidth() / 2;
+            }
+            else {
+                regionStart = getWidth() / 2;
+                mainTimeStartPos = 0;
+            }
+
+
+
+            topOffset = 2.5f * titleSpacing;
             monthSize = (float)getHeight() / 35;
             monthSpacing = (float)2.25*monthSize;
             daysSpacing = (float)1.25*numberSize;
             ampmSpacing = ( 12 * monthSpacing) / 2;
             minuteSpacing = 31*daysSpacing / 60;
+            ruleSize = .25f*minuteSpacing;
+
+//            monthShader = new LinearGradient(getWidth() / 2, 0, getWidth(), 0, Color.rgb(221, 120, 101), Color.rgb(210, 92, 72), TileMode.CLAMP);
+//            dayShader = new LinearGradient(getWidth() / 2, 0, getWidth(), 0, Color.rgb(221, 160, 104), Color.rgb(210, 138, 77), TileMode.CLAMP);
+//            hourShader = new LinearGradient(getWidth() / 2, 0, getWidth(), 0, Color.rgb(124, 209, 138), Color.rgb(88, 203, 115), TileMode.CLAMP);
+//            minuteShader = new LinearGradient(getWidth() / 2, 0, getWidth(), 0, Color.rgb(181, 221, 105), Color.rgb(166, 209, 77), TileMode.CLAMP);
+//            ampmShader = new LinearGradient(getWidth() / 2, 0, getWidth(), 0, Color.rgb(150, 209, 150), Color.rgb(128, 203, 145), TileMode.CLAMP);
+
+//            monthShader = new LinearGradient(getWidth() / 2, 0, getWidth(), 0, Color.rgb(221, 120, 101), Color.rgb(195, 76, 56), TileMode.CLAMP);
+//            dayShader = new LinearGradient(getWidth() / 2, 0, getWidth(), 0, Color.rgb(105, 181, 221), Color.rgb(87, 160, 199), TileMode.CLAMP);
+//            hourShader = new LinearGradient(getWidth() / 2, 0, getWidth(), 0, Color.rgb(124, 209, 138), Color.rgb(88, 203, 115), TileMode.CLAMP);
+//            minuteShader = new LinearGradient(getWidth() / 2, 0, getWidth(), 0, Color.rgb(181, 221, 105), Color.rgb(166, 209, 77), TileMode.CLAMP);
+//            ampmShader = new LinearGradient(getWidth() / 2, 0, getWidth(), 0, Color.rgb(248, 172, 103), Color.rgb(224, 147, 76), TileMode.CLAMP);
+
+            monthShader = new LinearGradient(regionStart, 0, regionStart + getWidth()/2, 0, Color.rgb(221, 120, 101), Color.rgb(210, 92, 72), TileMode.CLAMP);
+            dayShader = new LinearGradient(regionStart, 0, regionStart + getWidth()/2, 0, Color.rgb(105, 181, 221), Color.rgb(62, 144, 184), TileMode.CLAMP);
+            hourShader = new LinearGradient(regionStart, 0, regionStart + getWidth()/2, 0, Color.rgb(124, 209, 138), Color.rgb(77, 192, 103), TileMode.CLAMP);
+            minuteShader = new LinearGradient(regionStart, 0, regionStart + getWidth()/2, 0, Color.rgb(181, 221, 105), Color.rgb(138, 180, 52), TileMode.CLAMP);
+            ampmShader = new LinearGradient(regionStart, 0, regionStart + getWidth()/2, 0, Color.rgb(248, 172, 103), Color.rgb(204, 128, 59), TileMode.CLAMP);
+
+//            monthShader = new LinearGradient(getWidth() / 2, 0, getWidth(), 0, Color.rgb(221, 120, 101), Color.rgb(221, 120, 101), TileMode.CLAMP);
+//            dayShader = new LinearGradient(getWidth() / 2, 0, getWidth(), 0, Color.rgb(105, 181, 221), Color.rgb(105, 181, 221), TileMode.CLAMP);
+//            hourShader = new LinearGradient(getWidth() / 2, 0, getWidth(), 0, Color.rgb(124, 209, 138), Color.rgb(124, 209, 138), TileMode.CLAMP);
+//            minuteShader = new LinearGradient(getWidth() / 2, 0, getWidth(), 0, Color.rgb(181, 221, 105), Color.rgb(181, 221, 105), TileMode.CLAMP);
+//            ampmShader = new LinearGradient(getWidth() / 2, 0, getWidth(), 0, Color.rgb(248, 172, 103), Color.rgb(248, 172, 103), TileMode.CLAMP);
 
 
 
-//            drawRegion(0, true, division, 0, canvas);
-//            drawRegion(1, true, division, monthEnd, canvas);
-//            drawRegion(2, true, division, dayEnd, canvas);
-//            drawRegion(3, true, division, hourEnd, canvas);
-//            drawRegion(4, true, division, minuteEnd, canvas);
 
-//            drawRegion(0, true, getWidth() / 2, getWidth() / 2, canvas);
-//            drawRegion(1, true, getWidth() / 2, getWidth() / 2, canvas);
-//            drawRegion(2, true, getWidth() / 2, getWidth() / 2, canvas);
-//            drawRegion(3, true, getWidth() / 2, getWidth() / 2, canvas);
-//            drawRegion(4, true, getWidth() / 2, getWidth() / 2, canvas);
 
 
             textPaint.setTextAlign(Align.LEFT);
 
+
+
+
             if(touchRegion != 0) {
 //                drawRegion(touchRegion - 1, false, division * 2, ampmEnd + division, canvas);
-                drawRegion(touchRegion - 1, false, getWidth() / 2, getWidth() / 2, canvas);
+                drawRegion(touchRegion - 1, false, regionStart, getWidth() / 2, canvas);
 
             }
-
-
-            //// White Spacers
-
-//            monthEnd = division;
-//            dayEnd = monthEnd + division;
-//            hourEnd = dayEnd + division;
-//            minuteEnd = hourEnd + division;
-//            ampmEnd = minuteEnd + division;
-//
-//
-//            layoutPaint.setColor(Color.WHITE);
-//
-//            float spacerWidth = (float) getWidth() / 100;
-//            canvas.drawRect(monthEnd - spacerWidth / 2, 0, monthEnd + spacerWidth / 2, getHeight(), layoutPaint);
-//            canvas.drawRect(dayEnd - spacerWidth / 2, 0, dayEnd + spacerWidth / 2, getHeight(), layoutPaint);
-//            canvas.drawRect(hourEnd - spacerWidth / 2, 0, hourEnd + spacerWidth / 2, getHeight(), layoutPaint);
-//            canvas.drawRect(minuteEnd - spacerWidth / 2, 0, minuteEnd + spacerWidth / 2, getHeight(), layoutPaint);
-
-
+//            else if(touchRegion == 0)
+//            {
+//                okButton.setVisibility(View.VISIBLE);
+//            }
 
 
 
 
             ///// Titles
 
-            textPaint.setTextSize(titleSize);
+            textPaint.setTextSize(0.8f*titleSize);
 
-            textPaint.setTypeface(Typeface.create("normal", Typeface.BOLD));
+            //textPaint.setTypeface(Typeface.create("normal", Typeface.BOLD));
+            textPaint.setTypeface(Typeface.create("normal", Typeface.NORMAL));
 
-//            textPaint.setTextAlign(Align.CENTER);
-//            canvas.drawText("m", monthEnd - division / 2, titleSpacing, textPaint);
-//            canvas.drawText("d", dayEnd - division / 2, titleSpacing, textPaint);
-//            canvas.drawText("h", hourEnd - division / 2, titleSpacing, textPaint);
-//            //canvas.drawText("am pm", ampmEnd - division / 2, titleSpacing, textPaint);
-//            canvas.drawText("min", minuteEnd - division / 2, titleSpacing, textPaint);
+            // Month
+            float divs = getWidth() / 2 / 7.0f;
+            float currentPOS = regionStart;
+            textPaint.setTextAlign(Align.CENTER);
 
-            textPaint.setTextAlign(Align.LEFT);
-            if(touchRegion == 1)
-                canvas.drawText("month", getWidth() / 2 + division / 2, titleSpacing, textPaint);
-            else if(touchRegion == 2)
-                canvas.drawText("day", getWidth() / 2 + division / 2, titleSpacing, textPaint);
-            else if(touchRegion == 3)
-                canvas.drawText("hour", getWidth() / 2 + division / 2, titleSpacing, textPaint);
-            else if(touchRegion == 4)
-                canvas.drawText("minute", getWidth() / 2 + division / 2, titleSpacing, textPaint);
-            else if(touchRegion == 5)
-                canvas.drawText("am or pm", getWidth() / 2 + division / 2, titleSpacing, textPaint);
+            float touchMid = 1.5f * divs;
+            float nonTouchMid = .5f * divs;
+            float touchSpace = 3.0f * divs;
+            float nonTouchSpace  = divs;
+
+            float spacing = nonTouchSpace;
+            float spacingMid = nonTouchMid;
+            float offset = 1.5f*titleSpacing;
+            String text = "month";
+
+            Shader shader = new Shader();
+            layoutPaint.setColor(Color.WHITE);
+
+
+
+
+            if (touchRegion != 0) {
+                if (touchRegion == 1) {
+                    text = "month";
+                    spacing = touchSpace;
+                    spacingMid = touchMid;
+                } else {
+                    text = "m";
+                    spacing = nonTouchSpace;
+                    spacingMid = nonTouchMid;
+                }
+                shader = monthShader;
+                layoutPaint.setShader(shader);
+                canvas.drawRect(currentPOS, 0, currentPOS + spacing, offset, layoutPaint);
+                canvas.drawText(text, currentPOS + spacingMid, titleSpacing, textPaint);
+                currentPOS += spacing;
+
+
+                if (touchRegion == 2) {
+                    text = "day";
+                    spacing = touchSpace;
+                    spacingMid = touchMid;
+                } else {
+                    text = "d";
+                    spacing = nonTouchSpace;
+                    spacingMid = nonTouchMid;
+                }
+                shader = dayShader;
+                layoutPaint.setShader(shader);
+                canvas.drawRect(currentPOS, 0, currentPOS + spacing, offset, layoutPaint);
+                canvas.drawText(text, currentPOS + spacingMid, titleSpacing, textPaint);
+                currentPOS += spacing;
+
+
+                if (touchRegion == 3) {
+                    text = "hour";
+                    spacing = touchSpace;
+                    spacingMid = touchMid;
+                } else {
+                    text = "h";
+                    spacing = nonTouchSpace;
+                    spacingMid = nonTouchMid;
+                }
+                shader = hourShader;
+                layoutPaint.setShader(shader);
+                canvas.drawRect(currentPOS, 0, currentPOS + spacing, offset, layoutPaint);
+                canvas.drawText(text, currentPOS + spacingMid, titleSpacing, textPaint);
+                currentPOS += spacing;
+
+
+                if (touchRegion == 4) {
+                    text = "minute";
+                    spacing = touchSpace;
+                    spacingMid = touchMid;
+                } else {
+                    text = "m";
+                    spacing = nonTouchSpace;
+                    spacingMid = nonTouchMid;
+                }
+                shader = minuteShader;
+                layoutPaint.setShader(shader);
+                canvas.drawRect(currentPOS, 0, currentPOS + spacing, offset, layoutPaint);
+                canvas.drawText(text, currentPOS + spacingMid, titleSpacing, textPaint);
+                currentPOS += spacing;
+
+
+                if (touchRegion == 5) {
+                    text = "am/pm";
+                    spacing = touchSpace;
+                    spacingMid = touchMid;
+                } else {
+                    text = "ap";
+                    spacing = nonTouchSpace;
+                    spacingMid = nonTouchMid;
+                }
+                shader = ampmShader;
+                layoutPaint.setShader(shader);
+                canvas.drawRect(currentPOS, 0, currentPOS + spacing, offset, layoutPaint);
+                canvas.drawText(text, currentPOS + spacingMid, titleSpacing, textPaint);
+
+                // Little bars underneath
+
+                layoutPaint.setShader(new Shader());
+                layoutPaint.setColor(Color.argb(255 / 2, 255, 255, 255));
+
+                currentPOS = regionStart;
+
+
+                for(int i = 1; i < 6; i++ ) {
+                    if (i != touchRegion) {
+                        canvas.drawRect(currentPOS, offset - ruleSize / 2, currentPOS + nonTouchSpace, offset + ruleSize / 2, layoutPaint);
+                        currentPOS += nonTouchSpace;
+                    } else {
+                        currentPOS += touchSpace;
+                    }
+                }
+            }
+
+            layoutPaint.setShader(new Shader());
+
+
+
+
+
+
+
+            // Main date
 
             textPaint.setTypeface(Typeface.create("normal", Typeface.NORMAL));
             textPaint.setColor(Color.rgb(2 * 255 / 4, 2 * 255 / 4, 2 * 255 / 4));
             textPaint.setTextAlign(Align.CENTER);
             textPaint.setTextSize(getHeight() / 25);
 
-            String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+            String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "Novemeber", "December"};
 
             String[] amorpm = {"AM", "PM"};
-            canvas.drawText(months[selections[0]] + " " + Integer.toString(selections[1]), getWidth() / 4, getHeight() / 2 - titleSize, textPaint);
-            canvas.drawText(Integer.toString(selections[2]) + ":" + Integer.toString(selections[3]) + " " + amorpm[selections[4]], getWidth() / 4, getHeight() / 2 + titleSize, textPaint);
+            canvas.drawText(months[selections[0]] + " " + Integer.toString(selections[1]), mainTimeStartPos + getWidth() / 4, getHeight() / 2 - titleSize, textPaint);
+
+
+
+            if(selections[3] < 10)
+                canvas.drawText( Integer.toString(selections[2]) + ":0" + Integer.toString(selections[3]) + " " + amorpm[selections[4]], mainTimeStartPos + getWidth() / 4, getHeight() / 2 + titleSize, textPaint);
+            else
+                canvas.drawText(Integer.toString(selections[2]) + ":" + Integer.toString(selections[3]) + " " + amorpm[selections[4]], mainTimeStartPos + getWidth() / 4, getHeight() / 2 + titleSize, textPaint);
 
 
 
@@ -328,21 +481,22 @@ public class NewActivity extends ActionBarActivity{
         }
 
 
-        private void drawRegion(int region, boolean highlightable, float regionSize, float startX, Canvas canvas) {
-            int ruleSize = 8;
+
+        private void drawRegion(int region, boolean highlightable, float startX, float regionSize, Canvas canvas) {
+
 
             Shader shader = new Shader();
 
             if (region == 0)
-                shader = new LinearGradient(startX, 0, startX + regionSize, 0, Color.rgb(221,120,101), Color.rgb(210,92,72), TileMode.CLAMP);
+                shader = monthShader;
             else if (region == 1)
-                shader = new LinearGradient(startX, 0, startX + regionSize, 0, Color.rgb(221,160,104), Color.rgb(210,138,77), TileMode.CLAMP);
+                shader = dayShader;
             else if (region == 2)
-                shader = new LinearGradient(startX, 0, startX + regionSize, 0, Color.rgb(124,209,138), Color.rgb(88,203,115), TileMode.CLAMP);
+                shader = hourShader;
             else if (region == 3)
-                shader = new LinearGradient(startX, 0, startX + regionSize, 0, Color.rgb(181,221,105), Color.rgb(166,209,77), TileMode.CLAMP);
+                shader = minuteShader;
             else if (region == 4)
-                shader = new LinearGradient(startX, 0, startX + regionSize, 0, Color.rgb(150,209,150), Color.rgb(128,203,145), TileMode.CLAMP);
+                shader = ampmShader;
 
 
             int textColour = Color.WHITE;
@@ -421,7 +575,7 @@ public class NewActivity extends ActionBarActivity{
 
                 float division = (float)0.5 * regionSize;
 
-                for (int i = 1; i <= 31; i++) {
+                for (int i = 1; i <= daysPerMonth[selections[0]]; i++) {
                     if (i == selections[1]) {
                         layoutPaint.setColor(selectionColour);
                         textPaint.setColor(selectionColour);
@@ -448,7 +602,7 @@ public class NewActivity extends ActionBarActivity{
 
                 layoutPaint.setColor(selectionColour);
                 canvas.drawRect(startX, topOffset + (selections[2] - 1) * monthSpacing, hourEnd, topOffset + (selections[2]) * monthSpacing, layoutPaint);
-                layoutPaint.setColor(textColour);
+                layoutPaint.setColor(rulerColour);
 
                 for (int i = 0; i < 12; i++) {
                     canvas.drawText(Integer.toString(i + 1), hourEnd - division / 2, topOffset + i * monthSpacing + monthCharOffset, textPaint);
@@ -456,7 +610,7 @@ public class NewActivity extends ActionBarActivity{
 
                 }
 
-                canvas.drawRect(dayEnd, topOffset - ruleSize / 4 + 12 * monthSpacing, hourEnd, topOffset + ruleSize / 4 + 12 * monthSpacing, layoutPaint);
+                canvas.drawRect(startX, topOffset - ruleSize / 4 + 12 * monthSpacing, hourEnd, topOffset + ruleSize / 4 + 12 * monthSpacing, layoutPaint);
 
             }
 
@@ -478,7 +632,7 @@ public class NewActivity extends ActionBarActivity{
                         textPaint.setColor(selectionColour);
                         canvas.drawText(Integer.toString(i), minuteEnd - (float) 1.5 * division, topOffset + i * minuteSpacing + rulerNumOffset, textPaint);
                         canvas.drawRect(minuteEnd - (float) 1.0 * division, topOffset + i * minuteSpacing - ruleSize / 2, minuteEnd, topOffset + i * minuteSpacing + ruleSize / 2, layoutPaint);
-                        layoutPaint.setColor(textColour);
+                        layoutPaint.setColor(rulerColour);
                         textPaint.setColor(textColour);
                     } else {
                         if (i % 5 == 0) {
@@ -490,8 +644,17 @@ public class NewActivity extends ActionBarActivity{
                     }
                 }
 
-                canvas.drawText(Integer.toString(59), minuteEnd - (float) 1.5 * division, topOffset + 59 * minuteSpacing + rulerNumOffset, textPaint);
-                canvas.drawRect(minuteEnd - (float) 1.0 * division, topOffset + 59 * minuteSpacing - ruleSize / 2, minuteEnd, topOffset + 59 * minuteSpacing + ruleSize / 2, layoutPaint);
+                if (selections[3] == 59) {
+                    layoutPaint.setColor(selectionColour);
+                    textPaint.setColor(selectionColour);
+                    canvas.drawText(Integer.toString(59), minuteEnd - (float) 1.5 * division, topOffset + 59 * minuteSpacing + rulerNumOffset, textPaint);
+                    canvas.drawRect(minuteEnd - (float) 1.0 * division, topOffset + 59 * minuteSpacing - ruleSize / 2, minuteEnd, topOffset + 59 * minuteSpacing + ruleSize / 2, layoutPaint);
+                    layoutPaint.setColor(rulerColour);
+                    textPaint.setColor(textColour);
+                } else {
+                    canvas.drawText(Integer.toString(59), minuteEnd - (float) 1.5 * division, topOffset + 59 * minuteSpacing + rulerNumOffset, textPaint);
+                    canvas.drawRect(minuteEnd - (float) 1.0 * division, topOffset + 59 * minuteSpacing - ruleSize / 2, minuteEnd, topOffset + 59 * minuteSpacing + ruleSize / 2, layoutPaint);
+                }
             }
 
 
@@ -504,21 +667,25 @@ public class NewActivity extends ActionBarActivity{
 
                 ampmEnd = startX + regionSize;
 
+                layoutPaint.setColor(selectionColour);
+                canvas.drawRect(startX, topOffset + selections[4] * ampmSpacing, ampmEnd, topOffset + (selections[4] + 1) * ampmSpacing, layoutPaint);
+                layoutPaint.setColor(rulerColour);
+
                 textPaint.setTextSize(monthSize);
                 canvas.drawRect(startX, topOffset - ruleSize / 4, ampmEnd, topOffset + ruleSize / 4, layoutPaint);
 
-                if (selections[4] == 0)
-                    textPaint.setColor(selectionColour);
+//                if (selections[4] == 0)
+//                    textPaint.setColor(selectionColour);
 
                 canvas.drawText("A", ampmEnd - division / 2, topOffset + ampmSpacing / 2, textPaint);
                 canvas.drawText("M", ampmEnd - division / 2, topOffset + ampmSpacing / 2 + monthSize, textPaint);
 
                 canvas.drawRect(startX, topOffset + ampmSpacing - ruleSize / 4, ampmEnd, topOffset + ampmSpacing + ruleSize / 4, layoutPaint);
 
-                if (selections[4] == 1)
-                    textPaint.setColor(selectionColour);
-                else
-                    textPaint.setColor(textColour);
+//                if (selections[4] == 1)
+//                    textPaint.setColor(selectionColour);
+//                else
+//                    textPaint.setColor(textColour);
 
                 canvas.drawText("P", ampmEnd - division / 2, topOffset + (float) 1.5 * ampmSpacing, textPaint);
                 canvas.drawText("M", ampmEnd - division / 2, topOffset + (float) 1.5 * ampmSpacing + monthSize, textPaint);
@@ -542,6 +709,9 @@ public class NewActivity extends ActionBarActivity{
 
 
         private void updateSelection(float y){
+
+//            float dy = Math.abs(y - mY);
+
             if (touchRegion == 1) {
                 if(y < topOffset)
                     selections[0] = 0;
@@ -553,8 +723,8 @@ public class NewActivity extends ActionBarActivity{
             else if (touchRegion == 2) {
                 if(y < topOffset)
                     selections[1] = 1;
-                else if(y >= topOffset + 30 * daysSpacing)
-                    selections[1] = 31;
+                else if(y >= topOffset + (daysPerMonth[selections[0]] - 1) * daysSpacing)
+                    selections[1] = daysPerMonth[selections[0]];
                 else
                     selections[1] = (int)((y - topOffset + daysSpacing/2.0) / daysSpacing) + 1;
             }
@@ -571,6 +741,8 @@ public class NewActivity extends ActionBarActivity{
                     selections[3] = 0;
                 else if(y >= topOffset + 59 * minuteSpacing)
                     selections[3] = 59;
+//                else if (dy > 0.25f*minuteSpacing)
+//                    selections[3] = 5*Math.round((int)((y - topOffset + minuteSpacing/2.0) / minuteSpacing)/5);
                 else
                     selections[3] = (int)((y - topOffset + minuteSpacing/2.0) / minuteSpacing);
             }
@@ -592,7 +764,9 @@ public class NewActivity extends ActionBarActivity{
             startTouchY = y;
             startTouchX = x;
 
-            startTouchTime = System.currentTimeMillis();
+            startTouchTimerCancelled = false;
+            new Handler().postDelayed(startTouchTimer, 200 );
+            //startTouchTime = System.currentTimeMillis();
 
 
         }
@@ -600,31 +774,34 @@ public class NewActivity extends ActionBarActivity{
         private void touch_move(float x, float y) {
             float dx = Math.abs(x - mX);
             float dy = Math.abs(y - mY);
-            if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
+            if (dx >= 0.5f*minuteSpacing || dy >= 0.5f*minuteSpacing) {
 
 
-                System.out.println("New move");
-                System.out.println("mWidth " + mWidth / 50);
-                System.out.println("dx " + dx);
-                System.out.println("x - startTouchX " + Float.toString(x - startTouchX));
+//                System.out.println("New move " + 0.5f*minuteSpacing);
+//                System.out.println("mWidth " + mWidth / 50);
+//                System.out.println("dx " + dx);
+//                System.out.println("x - startTouchX " + Float.toString(x - startTouchX));
 
                 if(swiping == 0) // don't know if it's swiping yet
                 {
-                    if(mX - x > mWidth / 50 /*&& x - startTouchX > mWidth / 10*/ ) {
-                        swiping = 1;
-                        swipeRight();
+                    if(dx > dy) {
+                        if (x - mX > mWidth / 50 /*&& x - startTouchX > mWidth / 10*/) {
+                            swiping = 1;
+                            startTouchTimerCancelled = true;
+                            swipeRight();
+                        } else if (x - mX < -mWidth / 50 /*&& x - startTouchX < - mWidth / 10*/) {
+                            swiping = 2;
+                            startTouchTimerCancelled = true;
+                            swipeLeft();
+                        }
+//                    else if(System.currentTimeMillis() - startTouchTime > 200 /*|| (dx < mWidth / 50 && Math.abs(startTouchY - y) > mHeight / 100)*/) {
+//                        swiping = 4;
+//                        updateSelection(startTouchY);
+//                        System.out.println("Not swiping");
+//                    }
+//
+////                    testSwiping(dx, dy);
                     }
-                    else if(mX - x < - mWidth / 50 /*&& x - startTouchX < - mWidth / 10*/ ) {
-                        swiping = 2;
-                        swipeLeft();
-                    }
-                    else if(System.currentTimeMillis() - startTouchTime > 200 /*|| (dx < mWidth / 50 && Math.abs(startTouchY - y) > mHeight / 100)*/) {
-                        swiping = 4;
-                        updateSelection(startTouchY);
-                        System.out.println("Not swiping");
-                    }
-
-//                    testSwiping(dx, dy);
                 }
                 else if(swiping == 4) // not swiping
                     updateSelection(y);
@@ -649,16 +826,16 @@ public class NewActivity extends ActionBarActivity{
 
             if(swiping == 0) {
                 updateSelection(startTouchY);
-                justReleased = true;
-                releaseTime = System.currentTimeMillis();
+                startChange();
             }
             else if(swiping == 4)
             {
-                justReleased = true;
-                releaseTime = System.currentTimeMillis();
+                startChange();
             }
 
             swiping = 0;
+
+            startTouchTimerCancelled = true;
 
 
         }
@@ -666,6 +843,12 @@ public class NewActivity extends ActionBarActivity{
 //        private void testSwiping(float dx, float dy) {
 //            if()
 //        }
+
+        private void startChange(){
+//            justReleased = true;
+//            releaseTime = System.currentTimeMillis();
+            new Handler().postDelayed(moveToNextSelectionRegion, 200 );
+        }
 
         private void swipeLeft(){
 
@@ -702,6 +885,25 @@ public class NewActivity extends ActionBarActivity{
             return true;
         }
     }
+
+    private Runnable moveToNextSelectionRegion = new Runnable() {
+        public void run() {
+            dv.swipeLeft();
+            dv.invalidate();
+        }
+    };
+
+    private Runnable startTouchTimer = new Runnable() {
+        public void run() {
+
+            if(!dv.startTouchTimerCancelled && dv.swiping == 0) {
+                dv.swiping = 4; // no longer swiping
+                dv.updateSelection(dv.startTouchY);
+                dv.invalidate();
+            }
+
+        }
+    };
 
     public String getMonth(int month) {
         String monthString;

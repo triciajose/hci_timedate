@@ -33,6 +33,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
     Button btnDatePicker, btnTimePicker, ok;
     private int mYear, mMonth, mDay, mHour, mMinute;
     long startTime, endTime;
+    String participant_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +63,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
         //timer = (TextView) findViewById(R.id.timer);
 
         Intent intent = getIntent();
+        intent.putExtra("ID",participant_id);
         goal_dates = intent.getStringExtra(MainActivity.GOAL_DATES).split(",");
         goal_times = intent.getStringExtra(MainActivity.GOAL_TIMES).split(",");
 
@@ -121,7 +123,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
                         @Override
                         public void onDateSet(DatePicker view, int year,
                                               int monthOfYear, int dayOfMonth) {
-                            txtDate.setText(getMonth(monthOfYear +1) + " " + dayOfMonth + ", "  + year);
+                            txtDate.setText(getMonth(monthOfYear +1) + " " + dayOfMonth );
 
                         }
                     }, mYear, mMonth, mDay);
@@ -273,7 +275,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
     public String getTitle(int counter) {
         String month = getMonth(Integer.parseInt(goal_dates[counter].split("-")[0]));
         Log.v("month", month);
-        String dayAndYear = (goal_dates[counter].split("-")[1]) + ", " + (goal_dates[counter].split("-")[2]);
+        String dayAndYear = (goal_dates[counter].split("-")[1]);
         String datetime = month + " " + dayAndYear + ", " + goal_times[counter];
 
         return datetime;

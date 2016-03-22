@@ -42,13 +42,16 @@ public class AndroidActivity extends ActionBarActivity implements
         CountDownTimer ctimer;
         DatePickerDialog datePickerDialog;
         TimePickerDialog timePickerDialog;
+        String participant_id;
+        String run = "1";
+        boolean countdownStarted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_android);
         try {
-            File output = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "mytextfile.txt");
+            File output = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "mytextfileA.txt");
             FileOutputStream fileOut = new FileOutputStream(output);
 
             //FileOutputStream fileOut=openFileOutput(my, MODE_PRIVATE);
@@ -70,15 +73,25 @@ public class AndroidActivity extends ActionBarActivity implements
         timer = (TextView) findViewById(R.id.timer);
 
         Intent intent = getIntent();
+        //intent.putExtra("ID",participant_id);
+        participant_id = intent.getStringExtra("ID");
         goal_dates = intent.getStringExtra(MainActivity.GOAL_DATES).split(",");
         goal_times = intent.getStringExtra(MainActivity.GOAL_TIMES).split(",");
+        Bundle extras = getIntent().getExtras();
+
+        if (extras != null) {
+            run = extras.getString("run");
+            Log.v("run",String.valueOf(run));
+        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getTitle(counter));
         builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                startTime = System.nanoTime();
-                ctimer = new MyCountDown(11000, 1000);
+                //startTime = System.nanoTime();
+                //if (run.equals("2")) {
+                //    ctimer = new MyCountDown(11000, 1000);
+                //}
                 // TODO: start timer
                 dialog.dismiss();
             }
@@ -119,7 +132,10 @@ public class AndroidActivity extends ActionBarActivity implements
         if (v == btnDatePicker) {
             // Get Current Date
             startTime = System.nanoTime();
-            ctimer = new MyCountDown(11000, 1000);
+            if (run.equals("2")) {
+                ctimer = new MyCountDown(11000, 1000);
+                countdownStarted = true;
+            }
             final Calendar c = Calendar.getInstance();
             mYear = c.get(Calendar.YEAR);
             mMonth = c.get(Calendar.MONTH);
@@ -132,13 +148,16 @@ public class AndroidActivity extends ActionBarActivity implements
                         @Override
                         public void onDateSet(DatePicker view, int year,
                                               int monthOfYear, int dayOfMonth) {
-                            txtDate.setText(getMonth(monthOfYear +1) + " " + dayOfMonth + ", "  + year);
+                            txtDate.setText(getMonth(monthOfYear +1) + " " + dayOfMonth);
                         }
                     }, mYear, mMonth, mDay);
             datePickerDialog.show();
         }
         if (v == btnTimePicker) {
-
+            if (run.equals("2") && countdownStarted == false) {
+                ctimer = new MyCountDown(11000, 1000);
+                countdownStarted = true;
+            }
             // Get Current Time
             final Calendar c = Calendar.getInstance();
             mHour = c.get(Calendar.HOUR_OF_DAY);
@@ -165,7 +184,17 @@ public class AndroidActivity extends ActionBarActivity implements
         }
         if (v == ok)
         {
+            ctimer.cancel();
             //Check if accurate
+            boolean result = false;
+            if (txtTime.equals("") && txtDate.equals(""))
+            {
+                result = true;
+            }
+            else
+            {
+                result = false;
+            }
             endTime = System.nanoTime();
             counter++;
 
@@ -203,7 +232,8 @@ public class AndroidActivity extends ActionBarActivity implements
             }
             timer.setText(time);
             try {
-                outputWriter.write(time + "\n");
+                outputWriter.append(participant_id + " " + System.currentTimeMillis() + " " + time + " " + result + "\n");
+                //outputWriter.write(participant_id + " " + System.currentTimeMillis() + " " + time + " " + result + "\n");
             }
             catch (Exception e)
             {
@@ -211,11 +241,15 @@ public class AndroidActivity extends ActionBarActivity implements
             }
 //            Intent intent = getIntent();
             if (counter < goal_times.length) {
+                countdownStarted = false;
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage(getTitle(counter));
                 builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        startTime = System.nanoTime();
+                        //startTime = System.nanoTime();
+                        //if (run.equals("2")) {
+                        //    ctimer = new MyCountDown(11000, 1000);
+                        //}
                         // TODO: start timer
                         dialog.dismiss();
                     }
@@ -282,7 +316,7 @@ public class AndroidActivity extends ActionBarActivity implements
     public String getTitle(int counter) {
         String month = getMonth(Integer.parseInt(goal_dates[counter].split("-")[0]));
         Log.v("month", month);
-        String dayAndYear = (goal_dates[counter].split("-")[1]) + ", " + (goal_dates[counter].split("-")[2]);
+        String dayAndYear = (goal_dates[counter].split("-")[1]);
         String datetime = month + " " + dayAndYear + ", " + goal_times[counter];
 
         return datetime;
@@ -301,10 +335,20 @@ public class AndroidActivity extends ActionBarActivity implements
             secs = 10;
             counter++;
             if (counter < goal_times.length) {
+                countdownStarted = false;
+                boolean result = false;
+                double time = 10.0;
+                try {
+                    outputWriter.write("!~!" + participant_id + " " + System.currentTimeMillis() + " " + time + " " + result + "\n");
+                }
+                catch (Exception e)
+                {
+
+                }
                 if (datePickerDialog != null) {
                     datePickerDialog.dismiss();
                 }
-                else if (timePickerDialog!=null)
+                if (timePickerDialog!=null)
                 {
                     timePickerDialog.dismiss();
                 }//timePickerDialog.dismiss();
@@ -312,7 +356,10 @@ public class AndroidActivity extends ActionBarActivity implements
                 builder.setMessage(getTitle(counter));
                 builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        startTime = System.nanoTime();
+                        //startTime = System.nanoTime();
+                        //if (run.equals("2")) {
+                        //    ctimer = new MyCountDown(11000, 1000);
+                        //}
                         // TODO: start timer
                         dialog.dismiss();
                     }

@@ -43,10 +43,16 @@ public class MainActivity extends ActionBarActivity {
     int NEW = 30;
     static final int SECOND_REQUEST = 2;  // The request code
     static final int THIRD_REQUEST = 3;  // The request code
+    static final int FORTH_REQUEST = 4;  // The request code
+    static final int FIFTH_REQUEST = 5;  // The request code
+    static final int SIXTH_REQUEST = 6;  // The request code
     boolean left = true;
     int first;
     int second;
     int third;
+    int forth;
+    int fifth;
+    int sixth;
     String participant_id;
     CheckBox checkbox;
     Button start;
@@ -67,7 +73,7 @@ public class MainActivity extends ActionBarActivity {
         String dates = "";
         for(int i = 0; i < numDates - 1; i++)
         {
-            dates += randomDate() + ", ";
+            dates += randomDate() + ",";
         }
         dates += randomDate();
         return dates;
@@ -79,7 +85,7 @@ public class MainActivity extends ActionBarActivity {
         boolean onFives = true;
         for(int i = 0; i < numTimes - 1; i++)
         {
-            times += randomTime(onFives) + ", ";
+            times += randomTime(onFives) + ",";
             if(i % 2 == 0)
                 onFives = !onFives;
         }
@@ -169,8 +175,8 @@ public class MainActivity extends ActionBarActivity {
 
         // Create date and times
         randnum = new Random();
-        dates = randomDates(60);
-        times = randomTimes(60);
+        dates = randomDates(20);
+        times = randomTimes(20);
         System.out.println(dates);
         System.out.println(times);
 
@@ -267,6 +273,9 @@ public class MainActivity extends ActionBarActivity {
         first = order[0];
         second = order[1];
         third = order[2];
+        forth = order[0];
+        fifth = order[1];
+        sixth = order[2];
         Log.v("first",String.valueOf(first));
         Log.v("second", String.valueOf(second));
         Log.v("third", String.valueOf(third));
@@ -277,6 +286,9 @@ public class MainActivity extends ActionBarActivity {
         first = order[0];
         second = order[1];
         third = order[2];
+        forth = order[0];
+        fifth = order[1];
+        sixth = order[2];
         Log.v("first",String.valueOf(first));
         Log.v("second",String.valueOf(second));
         Log.v("third",String.valueOf(third));
@@ -340,11 +352,11 @@ public class MainActivity extends ActionBarActivity {
             if (resultCode == RESULT_OK) {
                 switch (third) {
                     case 1:
-                        Log.v("second", "android");
+                        Log.v("third", "android");
                         startAndroid(THIRD_REQUEST, run);
                         break;
                     case 2:
-                        Log.v("second", "ios");
+                        Log.v("third", "ios");
                         startiOS(THIRD_REQUEST, run );
                         break;
                     case 3:
@@ -361,10 +373,78 @@ public class MainActivity extends ActionBarActivity {
         if (requestCode == THIRD_REQUEST) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                startRun("2");
-                // do nothing
+                run = "2";
+                switch (forth) {
+                    case 1:
+                        Log.v("forth", "android");
+                        startAndroid(FORTH_REQUEST, run);
+                        break;
+                    case 2:
+                        Log.v("forth", "ios");
+                        startiOS(FORTH_REQUEST, run );
+                        break;
+                    case 3:
+                        Log.v("forth", "new");
+                        startNew(FORTH_REQUEST, run);
+                        break;
+                    default:
+                        break;
+                }
             }
+
+        }
+        if (requestCode == FORTH_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                run = "2";
+                switch (fifth) {
+                    case 1:
+                        Log.v("fifth", "android");
+                        startAndroid(FIFTH_REQUEST, run);
+                        break;
+                    case 2:
+                        Log.v("forth", "ios");
+                        startiOS(FIFTH_REQUEST, run );
+                        break;
+                    case 3:
+                        Log.v("forth", "new");
+                        startNew(FIFTH_REQUEST, run);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+        }
+        if (requestCode == FIFTH_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                run = "2";
+                switch (sixth) {
+                    case 1:
+                        Log.v("sixth", "android");
+                        startAndroid(SIXTH_REQUEST, run);
+                        break;
+                    case 2:
+                        Log.v("sixth", "ios");
+                        startiOS(SIXTH_REQUEST, run );
+                        break;
+                    case 3:
+                        Log.v("sixth", "new");
+                        startNew(SIXTH_REQUEST, run);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+        }
+        if (requestCode == SIXTH_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                    finish();
+                }
+            }
+
         }
     }
-
-}

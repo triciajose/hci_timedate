@@ -32,8 +32,8 @@ public class AndroidActivity extends ActionBarActivity implements
 
         public String[] goal_dates;
         public String[] goal_times;
-        public String[] input_dates = new String[10];
-        public String[] input_times = new String[10];
+        public String[] input_dates = new String[20];
+        public String[] input_times = new String[20];
         public int counter = 0;
         public int secs;
         //public int last = 1;
@@ -53,13 +53,30 @@ public class AndroidActivity extends ActionBarActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_android);
-        for (int i =0; i < 10; i++)
+        for (int i =0; i < 20; i++)
         {
             input_times[i]="";
             input_dates[i]="";
         }
+        Intent intent = getIntent();
+        //intent.putExtra("ID",participant_id);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            run = extras.getString("run");
+            Log.v("run",String.valueOf(run));
+        }
+        participant_id = intent.getStringExtra("ID");
         try {
-            File output = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "mytextfileA.txt");
+            String fileName = participant_id;
+            File output;
+            if (run.equals("2"))
+            {
+                output = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "p"+fileName+"AN-2.txt");
+            }
+            else
+            {
+                output = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "p"+fileName+"AN.txt");
+            }
             FileOutputStream fileOut = new FileOutputStream(output);
 
             //FileOutputStream fileOut=openFileOutput(my, MODE_PRIVATE);
@@ -80,19 +97,16 @@ public class AndroidActivity extends ActionBarActivity implements
 
         timer = (TextView) findViewById(R.id.timer);
 
-        Intent intent = getIntent();
-        //intent.putExtra("ID",participant_id);
-        participant_id = intent.getStringExtra("ID");
+
         goal_dates = intent.getStringExtra(MainActivity.GOAL_DATES).split(",");
         goal_times = intent.getStringExtra(MainActivity.GOAL_TIMES).split(",");
-        Bundle extras = getIntent().getExtras();
 
-        if (extras != null) {
-            run = extras.getString("run");
-            Log.v("run",String.valueOf(run));
-        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        if (run.equals("2"))
+        {
+            counter = counter + 10;
+        }
         builder.setMessage(getTitle(counter));
         builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -271,7 +285,6 @@ public class AndroidActivity extends ActionBarActivity implements
             //Check if accurate
             boolean result = false;
             //01-01-2016
-            String[] date = txtDate.getText().toString().split(" ");
             //if (input_times[counter])
             if (input_times[counter].equals(goal_times[counter]) && goal_dates[counter].equals(input_dates[counter]))
             {
@@ -283,6 +296,7 @@ public class AndroidActivity extends ActionBarActivity implements
             }
             endTime = System.nanoTime();
             counter++;
+            System.out.println("Counter = " + counter);
 
             long minutesElapsed = ((endTime - startTime)/1000000000)/60;
             long secondsElapsed = (endTime - startTime)/1000000000;
@@ -329,7 +343,7 @@ public class AndroidActivity extends ActionBarActivity implements
 
             }
 //            Intent intent = getIntent();
-            if (counter < goal_times.length) {
+            if (counter < goal_times.length && run.equals("2") || counter < 10 && run.equals("1")) {
                 countdownStarted = false;
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage(getTitle(counter));

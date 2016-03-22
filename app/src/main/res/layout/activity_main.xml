@@ -82,8 +82,6 @@
         android:inputType="number"
         android:ems="10"
         android:id="@+id/participant_id"
-        android:layout_above="@+id/lefthanded"
-        android:layout_alignRight="@+id/start2_button"
-        android:layout_alignEnd="@+id/start2_button" />
+        android:layout_above="@+id/lefthanded" />
 
 </RelativeLayout>

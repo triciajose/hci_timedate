@@ -8,6 +8,8 @@ import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +24,13 @@ import android.content.Context;
 import android.graphics.Paint.Align;
 import android.graphics.Shader.TileMode;
 import android.os.Handler;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 //import android.widget.Button;
 
 
@@ -32,6 +41,18 @@ public class NewActivity extends ActionBarActivity {
     public boolean left;
     public int counter = 0;
     String participant_id;
+    public boolean okTouched;
+    private static Context context;
+    String run = "1";
+    long startTime, endTime;
+    CountDownTimer ctimer;
+    public int secs;
+    OutputStreamWriter outputWriter;
+    boolean countdownStarted = false;
+    public String[] input_dates = new String[20];
+    public String[] input_times = new String[20];
+
+
 
     DrawingView dv ;
     private Paint mPaint;
@@ -41,19 +62,56 @@ public class NewActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
 
-        intent.putExtra("ID",participant_id);
+        for (int i =0; i < 20; i++)
+        {
+            input_times[i]="";
+            input_dates[i]="";
+        }
         goal_dates = intent.getStringExtra(MainActivity.GOAL_DATES).split(",");
         goal_times = intent.getStringExtra(MainActivity.GOAL_TIMES).split(",");
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             left = extras.getBoolean(MainActivity.LEFT);
+            run = extras.getString("run");
             Log.v("left",String.valueOf(left));
         }
-        //left = intent.getBooleanExtra(MainActivity.LEFT, );
+        participant_id = intent.getStringExtra("ID");
+
+        try {
+            String fileName = participant_id;
+            File output;
+            if (run.equals("2"))
+            {
+                output = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "p"+fileName+"New-2.txt");
+            }
+            else
+            {
+                output = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "p"+fileName+"New.txt");
+            }
+            FileOutputStream fileOut = new FileOutputStream(output);
+
+            //FileOutputStream fileOut=openFileOutput(my, MODE_PRIVATE);
+            outputWriter=new OutputStreamWriter(fileOut);
+            //outputWriter.write(textmsg.getText().toString());
+
+            //display file saved message
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        if (run.equals("2"))
+        {
+            counter = counter + 10;
+        }
         builder.setMessage(getTitle(counter));
         builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                startTime = System.nanoTime();
+                if (run.equals("2")) {
+                    ctimer = new MyCountDown(11000, 1000);
+                    countdownStarted = true;
+                }
                 // TODO: start timer
                 dialog.dismiss();
             }
@@ -74,7 +132,12 @@ public class NewActivity extends ActionBarActivity {
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setStrokeWidth(12);
 
+        NewActivity.context = this;
 
+    }
+
+    public static Context getAppContext() {
+        return NewActivity.context;
     }
 
     public class DrawingView extends View {
@@ -138,7 +201,7 @@ public class NewActivity extends ActionBarActivity {
         private boolean leftHanded;
 
         private float okButtonTopLeftX, okButtonTopLeftY, okButtonBottomRightX, okButtonBottomRightY;
-        private boolean okTouched;
+        //public boolean okTouched;
 
         public DrawingView(Context c) {
             super(c);
@@ -508,12 +571,6 @@ public class NewActivity extends ActionBarActivity {
             layoutPaint.setStyle(Paint.Style.FILL);
             layoutPaint.setColor(Color.WHITE);
             textPaint.setColor(Color.WHITE);
-
-
-
-
-
-
         }
 
 
@@ -730,19 +787,10 @@ public class NewActivity extends ActionBarActivity {
 
                 textPaint.setColor(textColour);
             }
-
-
-
-
-
         }
-
-
 
         private float mX, mY;
         private static final float TOUCH_TOLERANCE = 4;
-
-
 
         private void updateSelection(float y){
 
@@ -930,9 +978,123 @@ public class NewActivity extends ActionBarActivity {
 
     private Runnable end = new Runnable() {
         public void run() {
+            boolean result = false;
+            if (ctimer!=null) {
+                ctimer.cancel();
+            }
+
+            //endTime = System.nanoTime();
+
             System.out.println("END");
-            setResult(RESULT_OK);
-            finish();
+            System.out.println(goal_times.length);
+
+            //Chris here the input_times should have the value that the participant gave
+            if (input_times[counter].equals(goal_times[counter]) && goal_dates[counter].equals(input_dates[counter]))
+            {
+                result = true;
+            }
+            else
+            {
+                result = false;
+            }
+            endTime = System.nanoTime();
+            counter++;
+            System.out.println("Counter = " + counter);
+
+            long minutesElapsed = ((endTime - startTime)/1000000000)/60;
+            long secondsElapsed = (endTime - startTime)/1000000000;
+            long millisElapsed = ((endTime - startTime)%1000000000)/1000000;
+            String time = "";
+            if (minutesElapsed < 10)
+            {
+                time = time + "0" + minutesElapsed;
+            }
+            else
+            {
+                time = time + minutesElapsed;
+            }
+            if (secondsElapsed < 10)
+            {
+                time = time + ":0" + secondsElapsed;
+            }
+            else
+            {
+                time = time + ":" + secondsElapsed;
+            }
+            if (millisElapsed < 10)
+            {
+                time = time + ".00" + millisElapsed;
+            }
+            else if (millisElapsed < 100)
+            {
+                time = time + ".0" + millisElapsed;
+            }
+            else
+            {
+                time = time + "." +millisElapsed;
+            }
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+                Date resultdate = new Date(System.currentTimeMillis());
+                Log.v("Time:", time);
+                Log.v("PID:", participant_id);
+                Log.v("Date:", sdf.format(resultdate));
+                if (result)
+                {
+                    Log.v("Result:", "true");
+                }
+                else
+                {
+                    Log.v("Result:", "false");
+
+                }
+                outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time.toString() + " " + result + "\n");
+                //outputWriter.write(participant_id + " " + System.currentTimeMillis() + " " + time + " " + result + "\n");
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            if (counter < goal_times.length && run.equals("2") || counter < 10 && run.equals("1")) {
+                //countdownStarted = false;
+                AlertDialog.Builder builder = new AlertDialog.Builder(NewActivity.getAppContext());
+                builder.setMessage(getTitle(counter));
+                builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        startTime = System.nanoTime();
+                        if (run.equals("2")) {
+                            ctimer = new MyCountDown(11000, 1000);
+                            countdownStarted = true;
+                        }
+                        // TODO: start timer
+                        dialog.dismiss();
+                    }
+                });
+                builder.create();
+                builder.show();
+
+                getSupportActionBar().setTitle(getTitle(counter));
+                okTouched = false;
+
+                //txtTime.setText("");
+                //txtDate.setText("");
+            }
+            else
+            {
+                try {
+                    if (outputWriter != null) {
+                        outputWriter.close();
+                    }
+                }
+                catch (IOException e)
+                {
+
+                }
+//                Intent intent = new Intent();
+                setResult(RESULT_OK);
+                finish();
+            }
         }
     };
 
@@ -995,5 +1157,73 @@ public class NewActivity extends ActionBarActivity {
         String datetime = month + " " + dayAndYear + ", " + goal_times[counter];
 
         return datetime;
+    }
+
+    private class MyCountDown extends CountDownTimer
+    {
+        public MyCountDown(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+            //frameAnimation.start();
+            start();
+        }
+
+        @Override
+        public void onFinish() {
+            secs = 10;
+            counter++;
+            if (counter < goal_times.length && run.equals("2") || counter < 10 && run.equals("1")) {
+                countdownStarted = false;
+                boolean result = false;
+                double time = 10.1;
+                try {
+                    SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+                    Date resultdate = new Date(System.currentTimeMillis());
+                    outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time + " " + result + "\n");
+                }
+                catch (Exception e)
+                {
+
+                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(NewActivity.getAppContext());
+                builder.setMessage(getTitle(counter));
+                builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        startTime = System.nanoTime();
+                        if (run.equals("2")) {
+                            ctimer = new MyCountDown(11000, 1000);
+                            countdownStarted = true;
+                        }
+                        // TODO: start timer
+                        dialog.dismiss();
+                    }
+                });
+                builder.create();
+                builder.show();
+
+                getSupportActionBar().setTitle(getTitle(counter));
+                okTouched = false;
+            }
+            else
+            {
+                try {
+                    if (outputWriter != null) {
+                        outputWriter.close();
+                    }
+                }
+                catch (IOException e)
+                {
+
+                }
+//                Intent intent = new Intent();
+                setResult(RESULT_OK);
+                finish();
+            }
+        }
+
+        @Override
+        public void onTick(long duration) {
+            //cd.setText(String.valueOf(secs));
+            secs = secs - 1;
+        }
     }
 }

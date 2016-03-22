@@ -13,6 +13,8 @@ import android.widget.CompoundButton;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import android.widget.RadioGroup;
@@ -22,9 +24,18 @@ public class MainActivity extends ActionBarActivity {
     public final static String GOAL_TIMES = "com.mycompany.myfirstapp.TIMES";
     public final static String LEFT = "com.mycompany.myfirstapp.LEFT";
     public final static String TASK_NO = "1";
+
     //month-date-year
-    String dates = "01-01-2016,05-29-2016,03-23-2016,04-17-2016,11-30-2016,08-02-2016,10-01-2016,09-14-2016,04-01-2016,06-11-2016";
-    String times = "08:07 AM,10:03 PM,6:00 PM,2:30 PM,11:45 AM,8:00 AM,12:00 PM,7:00 PM,11:11 AM,1:15 PM";
+//    String dates = "01-01-2016,05-29-2016,03-23-2016,04-17-2016,11-30-2016,08-02-2016,10-01-2016,09-14-2016,04-01-2016,06-11-2016";
+//    String times = "08:07 AM,10:03 PM,6:00 PM,2:30 PM,11:45 AM,8:00 AM,12:00 PM,7:00 PM,11:11 AM,1:15 PM";
+
+
+    // Provides a balance of distances July is in the middle, 01 at the top, 12 at the bottom, 00 at the top, PM at bottom
+    String startDate = "07-1-2016"; // Starting position should offer no advantage to any interface
+    String startTime = "12:00 PM";
+
+    String dates;
+    String times;
 
     static final int FIRST_REQUEST = 1;  // The request code
     int ANDROID = 10;
@@ -44,6 +55,78 @@ public class MainActivity extends ActionBarActivity {
     RadioGroup radio;
     // android, ios, new
     int [] order = {1, 2, 3};
+
+
+
+    ////// For random date and time
+
+    Random randnum;
+
+    private String randomDates(int numDates){
+        randnum.setSeed(123456789);
+        String dates = "";
+        for(int i = 0; i < numDates - 1; i++)
+        {
+            dates += randomDate() + ", ";
+        }
+        dates += randomDate();
+        return dates;
+    }
+
+    private String randomTimes(int numTimes){
+        randnum.setSeed(987654321);
+        String times = "";
+        boolean onFives = true;
+        for(int i = 0; i < numTimes - 1; i++)
+        {
+            times += randomTime(onFives) + ", ";
+            if(i % 2 == 0)
+                onFives = !onFives;
+        }
+        times += randomTime(onFives);
+        return times;
+    }
+
+    private String randomTime(boolean onFives)
+    {
+        String time;
+        int hour = randBetween(0, 23);
+        int ampm = randBetween(0,1);
+        int min;
+
+        if(onFives) {
+            min = 5*randBetween(0, 11);
+        }
+        else
+            min = randBetween(0, 59);
+
+        SimpleDateFormat dfDateTime  = new SimpleDateFormat("hh:mm a");
+        GregorianCalendar gc = new GregorianCalendar(2016, 1, 1, hour, min);
+
+        return dfDateTime.format(gc.getTime());
+    }
+
+
+    private String randomDate()
+    {
+
+        SimpleDateFormat dfDateTime  = new SimpleDateFormat("MM-dd-yyyy");
+        int year = 2016;
+        int month = randBetween(0, 11);
+
+        GregorianCalendar gc = new GregorianCalendar(year, month, 1);
+        int day = randBetween(1, gc.getActualMaximum(gc.DAY_OF_MONTH));
+
+        gc.set(year, month, day);
+
+        return dfDateTime.format(gc.getTime());
+    }
+
+    private int randBetween(int min, int max) {
+        return randnum.nextInt(max - min + 1) + min;
+    }
+
+    //////////
 
 
     public void onRadioButtonClicked(View view) {
@@ -82,6 +165,14 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        // Create date and times
+        randnum = new Random();
+        dates = randomDates(60);
+        times = randomTimes(60);
+        System.out.println(dates);
+        System.out.println(times);
 
         checkbox=(CheckBox)findViewById(R.id.lefthanded);
         checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

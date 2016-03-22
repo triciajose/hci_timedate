@@ -137,6 +137,9 @@ public class NewActivity extends ActionBarActivity {
 
         private boolean leftHanded;
 
+        private float okButtonTopLeftX, okButtonTopLeftY, okButtonBottomRightX, okButtonBottomRightY;
+        private boolean okTouched;
+
         public DrawingView(Context c) {
             super(c);
             context=c;
@@ -209,6 +212,8 @@ public class NewActivity extends ActionBarActivity {
                 leftHanded = false;
             }
 
+
+            okTouched = false;
 
         }
 
@@ -346,7 +351,7 @@ public class NewActivity extends ActionBarActivity {
 
 
 
-            if (touchRegion != 0) {
+//            if (touchRegion != 0) {
                 if (touchRegion == 1) {
                     text = "month";
                     spacing = touchSpace;
@@ -441,7 +446,7 @@ public class NewActivity extends ActionBarActivity {
                         currentPOS += touchSpace;
                     }
                 }
-            }
+//            }
 
             layoutPaint.setShader(new Shader());
 
@@ -472,6 +477,37 @@ public class NewActivity extends ActionBarActivity {
 
 
 
+            ///// Ok button
+
+            layoutPaint.setStyle(Paint.Style.STROKE);
+            layoutPaint.setStrokeWidth(ruleSize);
+            layoutPaint.setStrokeMiter(ruleSize);
+            layoutPaint.setColor(Color.rgb(3*255/4, 3*255/4, 3*255/4));
+
+            if(okTouched)
+                textPaint.setColor(Color.rgb(180, 20, 180));
+            else
+                textPaint.setColor(Color.rgb(50, 180, 80));
+
+
+            float okButtonWidth = 2*titleSize;
+            float okButtonHeight = 2*titleSize;
+            float okTextPositionX = regionStart + getWidth() / 4;
+            float okTextPositionY = getHeight() / 2 + okButtonHeight / 4;
+            okButtonTopLeftX = okTextPositionX - okButtonWidth /2;
+            okButtonTopLeftY = okTextPositionY - okButtonHeight;
+            okButtonBottomRightX = okTextPositionX + okButtonWidth/2;
+            okButtonBottomRightY = okTextPositionY;
+
+            textPaint.setTextSize(2*titleSize);
+            if(touchRegion == 0){
+                canvas.drawText("Ok",okTextPositionX, okTextPositionY, textPaint);
+                //canvas.drawRect(okButtonTopLeftX, okButtonTopLeftY, okButtonBottomRightX, okButtonBottomRightY, layoutPaint);
+            }
+
+            layoutPaint.setStyle(Paint.Style.FILL);
+            layoutPaint.setColor(Color.WHITE);
+            textPaint.setColor(Color.WHITE);
 
 
 
@@ -765,8 +801,8 @@ public class NewActivity extends ActionBarActivity {
             startTouchX = x;
 
             startTouchTimerCancelled = false;
-            new Handler().postDelayed(startTouchTimer, 200 );
-            //startTouchTime = System.currentTimeMillis();
+            if(touchRegion != 0)
+                new Handler().postDelayed(startTouchTimer, 200 );
 
 
         }
@@ -776,11 +812,6 @@ public class NewActivity extends ActionBarActivity {
             float dy = Math.abs(y - mY);
             if (dx >= 0.5f*minuteSpacing || dy >= 0.5f*minuteSpacing) {
 
-
-//                System.out.println("New move " + 0.5f*minuteSpacing);
-//                System.out.println("mWidth " + mWidth / 50);
-//                System.out.println("dx " + dx);
-//                System.out.println("x - startTouchX " + Float.toString(x - startTouchX));
 
                 if(swiping == 0) // don't know if it's swiping yet
                 {
@@ -794,13 +825,6 @@ public class NewActivity extends ActionBarActivity {
                             startTouchTimerCancelled = true;
                             swipeLeft();
                         }
-//                    else if(System.currentTimeMillis() - startTouchTime > 200 /*|| (dx < mWidth / 50 && Math.abs(startTouchY - y) > mHeight / 100)*/) {
-//                        swiping = 4;
-//                        updateSelection(startTouchY);
-//                        System.out.println("Not swiping");
-//                    }
-//
-////                    testSwiping(dx, dy);
                     }
                 }
                 else if(swiping == 4) // not swiping
@@ -825,12 +849,24 @@ public class NewActivity extends ActionBarActivity {
             mPath.reset();
 
             if(swiping == 0) {
-                updateSelection(startTouchY);
-                startChange();
+                if(touchRegion == 0) {
+                    if (testOkButtonTouch(startTouchX, startTouchY))
+                        okTouch();
+                }
+                else {
+                    updateSelection(startTouchY);
+                    startChange();
+                }
+
             }
             else if(swiping == 4)
             {
-                startChange();
+                if(touchRegion == 0) {
+                    if (testOkButtonTouch(startTouchX, startTouchY))
+                        okTouch();
+                }
+                else
+                    startChange();
             }
 
             swiping = 0;
@@ -840,13 +876,19 @@ public class NewActivity extends ActionBarActivity {
 
         }
 
-//        private void testSwiping(float dx, float dy) {
-//            if()
-//        }
+        private boolean testOkButtonTouch(float x, float y){
+            return x > okButtonTopLeftX && x < okButtonBottomRightX && y > okButtonTopLeftY && y < okButtonBottomRightY;
+        }
+
+        private void okTouch(){
+            System.out.println("Yay you touched the button!");
+            if(!okTouched) {
+                okTouched = true;
+                new Handler().postDelayed(end, 200);
+            }
+        }
 
         private void startChange(){
-//            justReleased = true;
-//            releaseTime = System.currentTimeMillis();
             new Handler().postDelayed(moveToNextSelectionRegion, 200 );
         }
 
@@ -885,6 +927,14 @@ public class NewActivity extends ActionBarActivity {
             return true;
         }
     }
+
+    private Runnable end = new Runnable() {
+        public void run() {
+            System.out.println("END");
+            setResult(RESULT_OK);
+            finish();
+        }
+    };
 
     private Runnable moveToNextSelectionRegion = new Runnable() {
         public void run() {

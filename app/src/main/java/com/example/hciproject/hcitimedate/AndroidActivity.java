@@ -23,7 +23,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Calendar;
-
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 
 public class AndroidActivity extends ActionBarActivity implements
@@ -31,6 +32,8 @@ public class AndroidActivity extends ActionBarActivity implements
 
         public String[] goal_dates;
         public String[] goal_times;
+        public String[] input_dates = new String[10];
+        public String[] input_times = new String[10];
         public int counter = 0;
         public int secs;
         //public int last = 1;
@@ -50,6 +53,11 @@ public class AndroidActivity extends ActionBarActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_android);
+        for (int i =0; i < 10; i++)
+        {
+            input_times[i]="";
+            input_dates[i]="";
+        }
         try {
             File output = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "mytextfileA.txt");
             FileOutputStream fileOut = new FileOutputStream(output);
@@ -148,6 +156,32 @@ public class AndroidActivity extends ActionBarActivity implements
                         @Override
                         public void onDateSet(DatePicker view, int year,
                                               int monthOfYear, int dayOfMonth) {
+                            int month = monthOfYear + 1;
+                            if (month < 10)
+                            {
+                                if (dayOfMonth < 10)
+                                {
+                                    input_dates[counter] = "0" + month + "-0" + dayOfMonth + "-" + "2016";
+                                }
+                                else
+                                {
+                                    input_dates[counter] = "0" + month + "-" + dayOfMonth + "-" + "2016";
+                                }
+                            }
+                            else
+                            {
+                                if (dayOfMonth < 10)
+                                {
+                                    input_dates[counter] = month + "-0" + dayOfMonth + "-" + "2016";
+                                }
+                                else
+                                {
+                                    input_dates[counter] = month + "-" + dayOfMonth + "-" + "2016";
+                                }
+                            }
+                            //input_dates[counter] = monthOfYear+1 + "-" + dayOfMonth + "-" + "2016";
+                            Log.v("Counter:",String.valueOf(counter));
+                            Log.v("Input Date:", input_dates[counter]);
                             txtDate.setText(getMonth(monthOfYear +1) + " " + dayOfMonth);
                         }
                     }, mYear, mMonth, mDay);
@@ -172,22 +206,74 @@ public class AndroidActivity extends ActionBarActivity implements
                                               int minute) {
                             if (hourOfDay > 12) {
                                 hourOfDay = hourOfDay - 12;
-                                txtTime.setText(hourOfDay + ":" + minute + " PM");
-                            }
-                            else
+                                if (hourOfDay < 10)
+                                {
+                                    if (minute < 10)
+                                    {
+                                        txtTime.setText("0" + hourOfDay + ":0" + minute + " PM");
+                                    }
+                                    else
+                                    {
+                                        txtTime.setText("0" + hourOfDay + ":" + minute + " PM");
+                                    }
+                                }
+                                else
+                                {
+                                    if (minute < 10)
+                                    {
+                                        txtTime.setText(hourOfDay + ":0" + minute + " PM");
+                                    }
+                                    else
+                                    {
+                                        txtTime.setText(hourOfDay + ":" + minute + " PM");
+                                    }
+                                }
+                                //txtTime.setText(hourOfDay + ":" + minute + " PM");
+                            } else
                             {
-                                txtTime.setText(hourOfDay + ":" + minute + " AM");
+                                if (hourOfDay < 10)
+                                {
+                                    if (minute < 10)
+                                    {
+                                        txtTime.setText("0" + hourOfDay + ":0" + minute + " AM");
+                                    }
+                                    else
+                                    {
+                                        txtTime.setText("0" + hourOfDay + ":" + minute + " AM");
+                                    }
+                                }
+                                else
+                                {
+                                    if (minute < 10)
+                                    {
+                                        txtTime.setText(hourOfDay + ":0" + minute + " AM");
+                                    }
+                                    else
+                                    {
+                                        txtTime.setText(hourOfDay + ":" + minute + " AM");
+                                    }
+                                }
+                                //txtTime.setText(hourOfDay + ":" + minute + " AM");
                             }
+
+                            input_times[counter] = txtTime.getText().toString();
+                            Log.v("Counter:",String.valueOf(counter));
+                            Log.v("Input Date:", input_times[counter]);
                         }
                     }, mHour, mMinute, false);
             timePickerDialog.show();
         }
         if (v == ok)
         {
-            ctimer.cancel();
+            if (ctimer!=null) {
+                ctimer.cancel();
+            }
             //Check if accurate
             boolean result = false;
-            if (txtTime.equals("") && txtDate.equals(""))
+            //01-01-2016
+            String[] date = txtDate.getText().toString().split(" ");
+            //if (input_times[counter])
+            if (input_times[counter].equals(goal_times[counter]) && goal_dates[counter].equals(input_dates[counter]))
             {
                 result = true;
             }
@@ -232,7 +318,10 @@ public class AndroidActivity extends ActionBarActivity implements
             }
             timer.setText(time);
             try {
-                outputWriter.append(participant_id + " " + System.currentTimeMillis() + " " + time + " " + result + "\n");
+                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+                Date resultdate = new Date(System.currentTimeMillis());
+                Log.v("Time:", time);
+                outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time.toString() + " " + result + "\n");
                 //outputWriter.write(participant_id + " " + System.currentTimeMillis() + " " + time + " " + result + "\n");
             }
             catch (Exception e)
@@ -337,9 +426,12 @@ public class AndroidActivity extends ActionBarActivity implements
             if (counter < goal_times.length) {
                 countdownStarted = false;
                 boolean result = false;
-                double time = 10.0;
+                double time = 10.1;
                 try {
-                    outputWriter.write("!~!" + participant_id + " " + System.currentTimeMillis() + " " + time + " " + result + "\n");
+                    SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+                    Date resultdate = new Date(System.currentTimeMillis());
+                    outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time + " " + result + "\n");
+                    //outputWriter.write("!~!" + participant_id + " " + System.currentTimeMillis() + " " + time + " " + result + "\n");
                 }
                 catch (Exception e)
                 {

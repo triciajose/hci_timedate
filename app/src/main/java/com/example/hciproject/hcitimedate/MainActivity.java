@@ -115,6 +115,8 @@ public class MainActivity extends ActionBarActivity {
                 part_id.setVisibility(View.GONE);
                 part_id_inp.setVisibility(View.GONE);
                 radio.setVisibility(View.GONE);
+                participant_id = part_id_inp.getText().toString();
+                Log.v("PARTICIPANT ID",String.valueOf(participant_id));
             }
         });
     }
@@ -177,8 +179,7 @@ public class MainActivity extends ActionBarActivity {
         Log.v("first",String.valueOf(first));
         Log.v("second", String.valueOf(second));
         Log.v("third", String.valueOf(third));
-        startRun("2");
-
+        startRun("1");
     }
     public void startTask2(View view) {
         //order = shuffleArray(order);
@@ -213,7 +214,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Bundle extras = getIntent().getExtras();
-        String run = "2";
+        String run = "1";
         if (extras != null) {
             run = extras.getString("run");
             Log.v("run",String.valueOf("run"));
@@ -274,18 +275,5 @@ public class MainActivity extends ActionBarActivity {
             }
         }
     }
-    /*static int[] shuffleArray(int[] ar)
-    {
-        // If running on Java 6 or older, use `new Random()` on RHS here
-        Random rnd = new Random();
-        for (int i = ar.length - 1; i > 0; i--)
-        {
-            int index = rnd.nextInt(i + 1);
-            // Simple swap
-            int a = ar[index];
-            ar[index] = ar[i];
-            ar[i] = a;
-        }
-        return ar;
-    }*/
+
 }

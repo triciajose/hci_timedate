@@ -110,7 +110,7 @@ public class NewActivity extends ActionBarActivity {
             counter = counter + MainActivity.TRIALS;
         }
         if (run.equals("2")) {
-            if (request == MainActivity.FORTH_REQUEST){builder.setMessage("TASK 2\n\nFor this task, select the date and time as quickly as possible.  You will have 20 seconds, so don’t worry about going back and correcting errors if you make one, just keep going. Don’t worry about selecting a year, you can leave the year defaulted at 2016. Press ok as soon as you’ve finished. You will then hit start and repeat this until you have done a total of 5 trials. Once complete, you will be prompted to hand back the phone. ");
+            if (request == MainActivity.FORTH_REQUEST){builder.setMessage("TASK 2\n\nFor this task, select the date and time as quickly as possible.  You will have" + MainActivity.TIMEOUT + "seconds, so don’t worry about going back and correcting errors if you make one, just keep going. Don’t worry about selecting a year, you can leave the year defaulted at 2016. Press ok as soon as you’ve finished. You will then hit start and repeat this until you have done a total of 5 trials. Once complete, you will be prompted to hand back the phone. ");
 
                     AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
                     builder2.setMessage("You're about to start trials on the novel interface. There will be " + goal_times.length / 2 + " trials for this interface.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
@@ -128,7 +128,7 @@ public class NewActivity extends ActionBarActivity {
                     builder2.show();
             }
             else {
-                builder.setMessage("You're about to start timed trials on the novel interface. There will be " + goal_times.length / 2 + " trials for this interface and you have 10 seconds for each trial.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
+                builder.setMessage("You're about to start timed trials on the novel interface. There will be " + goal_times.length / 2 + " trials for this interface and you have\" + MainActivity.TIMEOUT + \"seconds for each trial.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
             }
         }
         else

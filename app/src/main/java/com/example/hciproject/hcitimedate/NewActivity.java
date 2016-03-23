@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
 //import android.widget.Button;
 
 
@@ -180,13 +181,11 @@ public class NewActivity extends ActionBarActivity {
 
         private int swiping;
         private float startTouchX, startTouchY;
-        private float lastTestX, lastTestY;
 
         private float mWidth;
         private float mHeight;
 
         private int[] selections;
-        private boolean[] selected;
 
         private int touchRegion; // 0 for no touch, 1 for month, 2 for day, 3 for hour, 4 for ampm, 5 for minute
         private int lastTouchRegion;
@@ -237,27 +236,24 @@ public class NewActivity extends ActionBarActivity {
 //            minuteShader = new LinearGradient(ampmEnd, 0, minuteEnd, 0, Color.rgb(181,221,105), Color.rgb(166,209,77), TileMode.CLAMP);
 
             selections = new int[5];
+
+            daysPerMonth = new int[]{31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+            leftHanded = left;
+
             selections[0] = 5;
             selections[1] = 10;
             selections[2] = 2;
             selections[3] = 45;
             selections[4] = 1;
 
-            selected = new boolean[5];
-            for(int i = 0; i < 5; i++)
-            {
-                selected[i] = false;
-            }
 
             touchRegion = 1;
             lastTouchRegion = 1;
 
-
             swiping = 0;
             startTouchX = 0;
             startTouchY = 0;
-            lastTestX = 0;
-            lastTestY = 0;
 
             startTouchTime = 0;
             releaseTime = 0;
@@ -265,18 +261,8 @@ public class NewActivity extends ActionBarActivity {
 
             startTouchTimerCancelled = false;
 
-            daysPerMonth = new int[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-
-            if (left) {
-                leftHanded = true;
-            }
-            else
-            {
-                leftHanded = false;
-            }
-
-
             okTouched = false;
+
 
         }
 
@@ -937,7 +923,7 @@ public class NewActivity extends ActionBarActivity {
         }
 
         private void startChange(){
-            new Handler().postDelayed(moveToNextSelectionRegion, 200 );
+            new Handler().postDelayed(moveToNextSelectionRegion, 200);
         }
 
         private void swipeLeft(){
@@ -951,6 +937,32 @@ public class NewActivity extends ActionBarActivity {
             touchRegion--;
             if(touchRegion == -1)
                 touchRegion = 5;
+        }
+
+        public void reset()
+        {
+            selections[0] = 5;
+            selections[1] = 10;
+            selections[2] = 2;
+            selections[3] = 45;
+            selections[4] = 1;
+
+
+            touchRegion = 1;
+            lastTouchRegion = 1;
+
+            swiping = 0;
+            startTouchX = 0;
+            startTouchY = 0;
+
+            startTouchTime = 0;
+            releaseTime = 0;
+            justReleased = false;
+
+            startTouchTimerCancelled = false;
+
+            okTouched = false;
+            invalidate();
         }
 
         @Override
@@ -989,14 +1001,36 @@ public class NewActivity extends ActionBarActivity {
             System.out.println(goal_times.length);
 
             //Chris here the input_times should have the value that the participant gave
-            if (input_times[counter].equals(goal_times[counter]) && goal_dates[counter].equals(input_dates[counter]))
-            {
-                result = true;
-            }
+            // year, month, day, hour (24 hour clock), minute
+
+
+            ////// Check if the date and time input is correct
+
+            int hourIn24;
+            if(dv.selections[2] == 12 && dv.selections[4] == 0)
+                hourIn24 = 0;
+            else if(dv.selections[2] == 12 && dv.selections[4] == 1)
+                hourIn24 = 12;
             else
-            {
-                result = false;
-            }
+                hourIn24 = dv.selections[2] + 12*dv.selections[4];
+
+
+            System.out.println("Month: " + dv.selections[0]);
+            GregorianCalendar gc = new GregorianCalendar(2016, dv.selections[0], dv.selections[1], hourIn24, dv.selections[3]);
+
+            SimpleDateFormat dfDateTime  = new SimpleDateFormat("MM-dd-yyyy");
+            input_dates [counter] = dfDateTime.format(gc.getTime());
+
+            dfDateTime = new SimpleDateFormat("hh:mm a");
+            input_times [counter] = dfDateTime.format(gc.getTime());
+
+            System.out.println("input_date " + input_dates[counter]);
+            System.out.println("input_time " + input_times[counter]);
+
+            result = input_times[counter].equals(goal_times[counter]) && goal_dates[counter].equals(input_dates[counter]);
+
+
+
             endTime = System.nanoTime();
             counter++;
             System.out.println("Counter = " + counter);
@@ -1050,9 +1084,7 @@ public class NewActivity extends ActionBarActivity {
                 }
                 outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time.toString() + " " + result + "\n");
                 //outputWriter.write(participant_id + " " + System.currentTimeMillis() + " " + time + " " + result + "\n");
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
 
             }
 
@@ -1075,7 +1107,7 @@ public class NewActivity extends ActionBarActivity {
                 builder.show();
 
                 getSupportActionBar().setTitle(getTitle(counter));
-                okTouched = false;
+                dv.reset();
 
                 //txtTime.setText("");
                 //txtDate.setText("");
@@ -1179,9 +1211,7 @@ public class NewActivity extends ActionBarActivity {
                     SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
                     Date resultdate = new Date(System.currentTimeMillis());
                     outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time + " " + result + "\n");
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
 
                 }
                 AlertDialog.Builder builder = new AlertDialog.Builder(NewActivity.getAppContext());
@@ -1201,7 +1231,7 @@ public class NewActivity extends ActionBarActivity {
                 builder.show();
 
                 getSupportActionBar().setTitle(getTitle(counter));
-                okTouched = false;
+                dv.reset();
             }
             else
             {

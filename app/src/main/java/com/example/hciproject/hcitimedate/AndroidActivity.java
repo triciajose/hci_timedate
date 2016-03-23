@@ -26,16 +26,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-
 public class AndroidActivity extends ActionBarActivity implements
         View.OnClickListener {
 
         public String[] goal_dates;
         public String[] goal_times;
-        public String[] input_dates = new String[20];
-        public String[] input_times = new String[20];
+        public String[] input_dates = new String[2*MainActivity.TRIALS];
+        public String[] input_times = new String[2*MainActivity.TRIALS];
         public int counter = 0;
-        public int secs;
+        public long secs;
         //public int last = 1;
         Button btnDatePicker, btnTimePicker, ok;
         TextView txtDate, txtTime;
@@ -48,13 +47,14 @@ public class AndroidActivity extends ActionBarActivity implements
         String participant_id;
         String run = "1";
         boolean countdownStarted = false;
-    public int request = 0;
+        public int request = 0;
+        long averageTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_android);
-        for (int i =0; i < 20; i++)
+        for (int i =0; i < 2 * MainActivity.TRIALS; i++)
         {
             input_times[i]="";
             input_dates[i]="";
@@ -106,7 +106,7 @@ public class AndroidActivity extends ActionBarActivity implements
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         if (run.equals("2"))
         {
-            counter = counter + 10;
+            counter = counter + MainActivity.TRIALS;
         }
         if (run.equals("2")) {
             if (request == MainActivity.FORTH_REQUEST){
@@ -312,6 +312,7 @@ public class AndroidActivity extends ActionBarActivity implements
 
             long minutesElapsed = ((endTime - startTime)/1000000000)/60;
             long secondsElapsed = (endTime - startTime)/1000000000;
+            averageTime = averageTime + secondsElapsed;
             long millisElapsed = ((endTime - startTime)%1000000000)/1000000;
             String time = "";
             if (minutesElapsed < 10)
@@ -354,7 +355,7 @@ public class AndroidActivity extends ActionBarActivity implements
 
             }
 //            Intent intent = getIntent();
-            if (counter < goal_times.length && run.equals("2") || counter < 10 && run.equals("1")) {
+            if (counter < goal_times.length && run.equals("2") || counter < MainActivity.TRIALS && run.equals("1")) {
                 countdownStarted = false;
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage("Ready for the next trial?\n\nPlease enter\n" + getTitle(counter));
@@ -446,7 +447,7 @@ public class AndroidActivity extends ActionBarActivity implements
 
         @Override
         public void onFinish() {
-            secs = 10;
+            secs = averageTime;
             counter++;
             if (counter < goal_times.length) {
                 countdownStarted = false;

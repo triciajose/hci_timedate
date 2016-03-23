@@ -47,13 +47,13 @@ public class NewActivity extends ActionBarActivity {
     String run = "1";
     long startTime, endTime;
     CountDownTimer ctimer;
-    public int secs;
+    public long secs;
     OutputStreamWriter outputWriter;
     boolean countdownStarted = false;
-    public String[] input_dates = new String[20];
-    public String[] input_times = new String[20];
+    public String[] input_dates = new String[2*MainActivity.TRIALS];
+    public String[] input_times = new String[2*MainActivity.TRIALS];
     public int request = 0;
-
+    long averageTime = 0;
 
 
     DrawingView dv ;
@@ -64,7 +64,7 @@ public class NewActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
 
-        for (int i =0; i < 20; i++)
+        for (int i =0; i < 2*MainActivity.TRIALS; i++)
         {
             input_times[i]="";
             input_dates[i]="";
@@ -105,7 +105,7 @@ public class NewActivity extends ActionBarActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         if (run.equals("2"))
         {
-            counter = counter + 10;
+            counter = counter + MainActivity.TRIALS;
         }
         if (run.equals("2")) {
             if (request == MainActivity.FORTH_REQUEST){
@@ -1051,6 +1051,7 @@ public class NewActivity extends ActionBarActivity {
 
             long minutesElapsed = ((endTime - startTime)/1000000000)/60;
             long secondsElapsed = (endTime - startTime)/1000000000;
+            averageTime = averageTime + secondsElapsed;
             long millisElapsed = ((endTime - startTime)%1000000000)/1000000;
             String time = "";
             if (minutesElapsed < 10)
@@ -1102,7 +1103,7 @@ public class NewActivity extends ActionBarActivity {
 
             }
 
-            if (counter < goal_times.length && run.equals("2") || counter < 10 && run.equals("1")) {
+            if (counter < goal_times.length && run.equals("2") || counter < MainActivity.TRIALS && run.equals("1")) {
                 //countdownStarted = false;
                 AlertDialog.Builder builder = new AlertDialog.Builder(NewActivity.getAppContext());
                 builder.setMessage("Ready for the next trial?\n\nPlease enter\n" +getTitle(counter));
@@ -1215,9 +1216,9 @@ public class NewActivity extends ActionBarActivity {
 
         @Override
         public void onFinish() {
-            secs = 10;
+            secs = averageTime;
             counter++;
-            if (counter < goal_times.length && run.equals("2") || counter < 10 && run.equals("1")) {
+            if (counter < goal_times.length && run.equals("2") || counter < MainActivity.TRIALS && run.equals("1")) {
                 countdownStarted = false;
                 boolean result = false;
                 double time = 10.1;

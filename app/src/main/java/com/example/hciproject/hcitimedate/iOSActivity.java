@@ -30,8 +30,8 @@ import java.util.Date;
 public class iOSActivity extends ActionBarActivity implements View.OnClickListener {
     public String[] goal_dates;
     public String[] goal_times;
-    public String[] input_dates = new String[20];
-    public String[] input_times = new String[20];
+    public String[] input_dates = new String[2*MainActivity.TRIALS];
+    public String[] input_times = new String[2*MainActivity.TRIALS];
     public int counter = 0;
     OutputStreamWriter outputWriter;
     TextView txtDate, txtTime;
@@ -40,19 +40,20 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
     long startTime, endTime;
     DatePickerDialog datePickerDialog;
     TimePickerDialog timePickerDialog;
-    int secs;
+    long secs;
     String participant_id;
     CountDownTimer ctimer;
     String run = "1";
     boolean countdownStarted = false;
     public int request = 0;
+    long averageTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(android.R.style.Theme_Holo_Light_DarkActionBar);
         setContentView(R.layout.activity_i_os);
-        for (int i =0; i < 20; i++)
+        for (int i =0; i < 2*MainActivity.TRIALS; i++)
         {
             input_times[i]="";
             input_dates[i]="";
@@ -105,7 +106,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
 
         if (run.equals("2"))
         {
-            counter = counter + 10;
+            counter = counter + MainActivity.TRIALS;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         if (run.equals("2")) {
@@ -309,6 +310,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
 
             long minutesElapsed = ((endTime - startTime)/1000000000)/60;
             long secondsElapsed = (endTime - startTime)/1000000000;
+            averageTime = averageTime + secondsElapsed;
             long millisElapsed = ((endTime - startTime)%1000000000)/1000000;
             String time = "";
             if (minutesElapsed < 10)
@@ -353,7 +355,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
 
             }
 //            Intent intent = getIntent();
-            if (counter < goal_times.length && run.equals("2") || counter < 10 && run.equals("1")) {
+            if (counter < goal_times.length && run.equals("2") || counter < MainActivity.TRIALS && run.equals("1")) {
                 countdownStarted = false;
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage("Ready for the next trial?\n\nPlease enter\n" + getTitle(counter));
@@ -445,7 +447,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
 
         @Override
         public void onFinish() {
-            secs = 10;
+            secs = averageTime;
             counter++;
             if (counter < goal_times.length) {
                 countdownStarted = false;

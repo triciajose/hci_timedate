@@ -26,6 +26,7 @@ public class MainActivity extends ActionBarActivity {
     public final static String GOAL_TIMES = "com.mycompany.myfirstapp.TIMES";
     public final static String LEFT = "com.mycompany.myfirstapp.LEFT";
     public final static String TASK_NO = "1";
+    public final static int TRIALS = 5;
 
     //month-date-year
 //    String dates = "01-01-2016,05-29-2016,03-23-2016,04-17-2016,11-30-2016,08-02-2016,10-01-2016,09-14-2016,04-01-2016,06-11-2016";
@@ -40,9 +41,9 @@ public class MainActivity extends ActionBarActivity {
     String times;
 
     static final int FIRST_REQUEST = 1;  // The request code
-    int ANDROID = 10;
-    int IOS = 20;
-    int NEW = 30;
+    //int ANDROID = 10;
+    //int IOS = 20;
+    //int NEW = 30;
     static final int SECOND_REQUEST = 2;  // The request code
     static final int THIRD_REQUEST = 3;  // The request code
     static final int FORTH_REQUEST = 4;  // The request code
@@ -174,11 +175,11 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        int trials = 2 * TRIALS;
         // Create date and times
         randnum = new Random();
-        dates = randomDates(20);
-        times = randomTimes(20);
+        dates = randomDates(trials);
+        times = randomTimes(trials);
         System.out.println(dates);
         System.out.println(times);
 

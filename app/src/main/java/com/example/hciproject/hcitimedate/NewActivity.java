@@ -109,7 +109,21 @@ public class NewActivity extends ActionBarActivity {
         }
         if (run.equals("2")) {
             if (request == MainActivity.FORTH_REQUEST){
-                builder.setMessage("Start TASK 2! Instructions! You're about to start timed trials on a new interface. There will be " + goal_times.length / 2 + " trials for this interface and you have 10 seconds for each trial.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter) + " and press OK.");
+                    builder.setMessage("Instructions for TASK 2!");
+                    AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+                    builder2.setMessage("You're about to start trials on a new interface. There will be " + goal_times.length / 2 + " trials for this interface.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter) + " and press OK");
+                    builder2.setPositiveButton("Start", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            //startTime = System.nanoTime();
+                            //if (run.equals("2")) {
+                            //    ctimer = new MyCountDown(11000, 1000);
+                            //}
+                            // TODO: start timer
+                            dialog.dismiss();
+                        }
+                    });
+                    builder2.create();
+                    builder2.show();
             }
             else {
                 builder.setMessage("You're about to start timed trials on a new interface. There will be " + goal_times.length / 2 + " trials for this interface and you have 10 seconds for each trial.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter) + " and press OK.");
@@ -117,8 +131,27 @@ public class NewActivity extends ActionBarActivity {
         }
         else
         {
-            builder.setMessage("You're about to start trials on a new interface. There will be " + goal_times.length / 2 + " trials for this interface.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter) + " and press OK");
-        }
+            if (request == MainActivity.FIRST_REQUEST)
+            {
+                builder.setMessage("Instructions for TASK 1!");
+                AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+                builder2.setMessage("You're about to start trials on a new interface. There will be " + goal_times.length / 2 + " trials for this interface.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter) + " and press OK");
+                builder2.setPositiveButton("Start", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //startTime = System.nanoTime();
+                        //if (run.equals("2")) {
+                        //    ctimer = new MyCountDown(11000, 1000);
+                        //}
+                        // TODO: start timer
+                        dialog.dismiss();
+                    }
+                });
+                builder2.create();
+                builder2.show();
+            }
+            else {
+                builder.setMessage("You're about to start trials on a new interface. There will be " + goal_times.length / 2 + " trials for this interface.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter) + " and press OK");
+            }        }
         //builder.setMessage("You're about to start trials on a new interface. There will be "+ goal_times.length /2 +" trials for this interface.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
         builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {

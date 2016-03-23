@@ -526,7 +526,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
 
         @Override
         public void onFinish() {
-            secs = 20;
+            secs = MainActivity.TIMEOUT;
             counter++;
             if (counter < goal_times.length) {
                 countdownStarted = false;

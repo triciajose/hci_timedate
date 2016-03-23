@@ -17,55 +17,50 @@
         android:id="@+id/start1_button"
         android:onClick="startTask1"
         android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/textView"
-        android:layout_alignEnd="@+id/textView" />
+        android:layout_alignRight="@+id/radioGroup"
+        android:layout_alignEnd="@+id/radioGroup" />
 
 
 
     <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:id="@+id/radioGroup"
-        android:layout_below="@+id/textView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/textView">
+
         <RadioButton android:id="@+id/radio_ain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="(A,I,N)"
             android:onClick="onRadioButtonClicked"/>
+
         <RadioButton android:id="@+id/radio_ina"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="(I,N,A)"
-            android:onClick="onRadioButtonClicked"/>
+            android:onClick="onRadioButtonClicked" />
+
         <RadioButton android:id="@+id/radio_nai"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="(N,A,I)"
-            android:onClick="onRadioButtonClicked"/>
+            android:onClick="onRadioButtonClicked"
+             />
+
     </RadioGroup>
 
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Participant ID"
-        android:id="@+id/participant_id_tag"
-        android:layout_alignTop="@+id/participant_id"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ready for Participant"
+        android:text="Ready"
         android:id="@+id/our_start"
-        android:layout_above="@+id/start1_button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="83dp" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <CheckBox
         android:layout_width="wrap_content"
@@ -73,15 +68,37 @@
         android:text="Left Handed"
         android:id="@+id/lefthanded"
         android:checked="true"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_gravity="right"
+        android:layout_alignTop="@+id/participant_id"
+        android:layout_toRightOf="@+id/participant_id"
+        android:layout_toEndOf="@+id/participant_id"
+        android:layout_marginLeft="26dp"
+        android:layout_marginStart="26dp" />
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="99dp"
         android:layout_height="wrap_content"
         android:inputType="number"
         android:ems="10"
         android:id="@+id/participant_id"
-        android:layout_above="@+id/lefthanded" />
+        android:layout_gravity="bottom"
+        android:layout_above="@+id/our_start"
+        android:layout_toRightOf="@+id/textView3"
+        android:layout_toEndOf="@+id/textView3"
+        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="ID"
+        android:layout_gravity="bottom"
+        android:layout_alignTop="@+id/participant_id"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp"
+        android:id="@+id/participant_id_tag" />
 
 </RelativeLayout>

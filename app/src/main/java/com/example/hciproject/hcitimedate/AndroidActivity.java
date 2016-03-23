@@ -53,7 +53,8 @@ public class AndroidActivity extends ActionBarActivity implements
         int iMin = 0;
         int iDay = 1;
         int iMonth = 6;
-
+        String setHour = "12", setMin = "00", setDay = "01", setMonth="07";
+        String setAM = "AM";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -248,7 +249,9 @@ public class AndroidActivity extends ActionBarActivity implements
                             //input_dates[counter] = monthOfYear+1 + "-" + dayOfMonth + "-" + "2016";
                             Log.v("Counter:",String.valueOf(counter));
                             Log.v("Input Date:", input_dates[counter]);
-                            txtDate.setText(getMonth(monthOfYear +1) + " " + dayOfMonth);
+                            txtDate.setText(getMonth(monthOfYear + 1) + " " + dayOfMonth);
+                            setMonth =input_dates[counter].split("-")[0];
+                            setDay = input_dates[counter].split("-")[1];
                         }
                     }, 2016, iMonth, iDay);
             datePickerDialog.show();
@@ -331,7 +334,9 @@ public class AndroidActivity extends ActionBarActivity implements
                                     }
                                 }
                             }
-
+                            setHour = txtTime.getText().toString().split(" ")[0].split(":")[0];
+                            setMin = txtTime.getText().toString().split(" ")[0].split(":")[1];
+                            setAM = txtTime.getText().toString().split(" ")[1];
                             input_times[counter] = txtTime.getText().toString();
                             Log.v("Counter:", String.valueOf(counter));
                             Log.v("Input Date:", input_times[counter]);
@@ -352,6 +357,39 @@ public class AndroidActivity extends ActionBarActivity implements
             boolean result = false;
             //01-01-2016
             //if (input_times[counter])
+            String goalHour = (goal_times[counter].split(" "))[0].split(":")[0];
+            String goalMin = (goal_times[counter].split(" "))[0].split(":")[1];
+            String goalDay = (goal_dates[counter].split("-"))[1];
+            String goalMonth = (goal_dates[counter].split("-"))[0];
+            String goalAM = (goal_times[counter].split(" "))[1].split(":")[0];
+
+            System.out.println("GoalHour: " + goalHour);
+            System.out.println("GoalMin: " + goalMin);
+            System.out.println("SetHour: " + setHour);
+            System.out.println("SetMin: " + setMin);
+            int points = 0;
+            if (setHour.equals(goalHour))
+            {
+                points  = points + 1;
+            }
+            if (setMin.equals(goalMin))
+            {
+                points = points + 1;
+            }
+            if (setDay.equals(goalDay))
+            {
+                points = points + 1;
+            }
+            if (setMonth.equals(goalMonth))
+            {
+                points = points + 1;
+            }
+            if (setAM.equals(goalAM))
+            {
+                points = points + 1;
+            }
+    System.out.println("Points: " + points);
+
             if (input_times[counter].equals(goal_times[counter]) && goal_dates[counter].equals(input_dates[counter]))
             {
                 result = true;
@@ -401,7 +439,7 @@ public class AndroidActivity extends ActionBarActivity implements
                 SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
                 Date resultdate = new Date(System.currentTimeMillis());
                 Log.v("Time:", time);
-                outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time.toString() + " " + result + "\n");
+                outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time.toString() + " " + result + " " + points + "\n");
                 //outputWriter.write(participant_id + " " + System.currentTimeMillis() + " " + time + " " + result + "\n");
             }
             catch (Exception e)
@@ -505,12 +543,38 @@ public class AndroidActivity extends ActionBarActivity implements
             counter++;
             if (counter < goal_times.length) {
                 countdownStarted = false;
+                String goalHour = (goal_times[counter].split(" "))[0].split(":")[0];
+                String goalMin = (goal_times[counter].split(" "))[0].split(":")[1];
+                String goalDay = (goal_dates[counter].split("-"))[1];
+                String goalMonth = (goal_dates[counter].split("-"))[0];
+                String goalAM = (goal_times[counter].split(" "))[1].split(":")[0];
+                int points = 0;
+                if (setHour.equals(goalHour))
+                {
+                    points  = points + 1;
+                }
+                if (setMin.equals(goalMin))
+                {
+                    points = points + 1;
+                }
+                if (setDay.equals(goalDay))
+                {
+                    points = points + 1;
+                }
+                if (setMonth.equals(goalMonth))
+                {
+                    points = points + 1;
+                }
+                if (setAM.equals(goalAM))
+                {
+                    points = points + 1;
+                }
                 boolean result = false;
                 double time = 10.1;
                 try {
                     SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
                     Date resultdate = new Date(System.currentTimeMillis());
-                    outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time + " " + result + "\n");
+                    outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time + " " + result + " " + points + "\n");
                     //outputWriter.write("!~!" + participant_id + " " + System.currentTimeMillis() + " " + time + " " + result + "\n");
                 }
                 catch (Exception e)

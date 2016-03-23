@@ -54,6 +54,8 @@ public class NewActivity extends ActionBarActivity {
     public String[] input_times = new String[2*MainActivity.TRIALS];
     public int request = 0;
     long averageTime = 0;
+    String setHour = "12", setMin = "00", setDay = "01", setMonth="07";
+    String setAM = "AM";
 
 
     DrawingView dv ;
@@ -1067,16 +1069,50 @@ public class NewActivity extends ActionBarActivity {
 
             SimpleDateFormat dfDateTime  = new SimpleDateFormat("MM-dd-yyyy");
             input_dates [counter] = dfDateTime.format(gc.getTime());
-
+            setMonth =input_dates[counter].split("-")[0];
+            setDay = input_dates[counter].split("-")[1];
             dfDateTime = new SimpleDateFormat("hh:mm a");
             input_times [counter] = dfDateTime.format(gc.getTime());
+            setHour = input_times[counter].split(" ")[0].split(":")[0];
+            setMin = input_times[counter].split(" ")[0].split(":")[1];
+            setAM = input_times[counter].split(" ")[1];
 
             System.out.println("input_date " + input_dates[counter]);
             System.out.println("input_time " + input_times[counter]);
 
             result = input_times[counter].equals(goal_times[counter]) && goal_dates[counter].equals(input_dates[counter]);
 
+            String goalHour = (goal_times[counter].split(" "))[0].split(":")[0];
+            String goalMin = (goal_times[counter].split(" "))[0].split(":")[1];
+            String goalDay = (goal_dates[counter].split("-"))[1];
+            String goalMonth = (goal_dates[counter].split("-"))[0];
+            String goalAM = (goal_times[counter].split(" "))[1].split(":")[0];
 
+            System.out.println("GoalHour: " + goalHour);
+            System.out.println("GoalMin: " + goalMin);
+            System.out.println("SetHour: " + setHour);
+            System.out.println("SetMin: " + setMin);
+            int points = 0;
+            if (setHour.equals(goalHour))
+            {
+                points  = points + 1;
+            }
+            if (setMin.equals(goalMin))
+            {
+                points = points + 1;
+            }
+            if (setDay.equals(goalDay))
+            {
+                points = points + 1;
+            }
+            if (setMonth.equals(goalMonth))
+            {
+                points = points + 1;
+            }
+            if (setAM.equals(goalAM))
+            {
+                points = points + 1;
+            }
 
             endTime = System.nanoTime();
             counter++;
@@ -1130,7 +1166,7 @@ public class NewActivity extends ActionBarActivity {
                     Log.v("Result:", "false");
 
                 }
-                outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time.toString() + " " + result + "\n");
+                outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time.toString() + " " + result + " " + points + "\n");
                 //outputWriter.write(participant_id + " " + System.currentTimeMillis() + " " + time + " " + result + "\n");
             } catch (Exception e) {
 
@@ -1253,12 +1289,38 @@ public class NewActivity extends ActionBarActivity {
             counter++;
             if (counter < goal_times.length && run.equals("2") || counter < MainActivity.TRIALS && run.equals("1")) {
                 countdownStarted = false;
+                String goalHour = (goal_times[counter].split(" "))[0].split(":")[0];
+                String goalMin = (goal_times[counter].split(" "))[0].split(":")[1];
+                String goalDay = (goal_dates[counter].split("-"))[1];
+                String goalMonth = (goal_dates[counter].split("-"))[0];
+                String goalAM = (goal_times[counter].split(" "))[1].split(":")[0];
+                int points = 0;
+                if (setHour.equals(goalHour))
+                {
+                    points  = points + 1;
+                }
+                if (setMin.equals(goalMin))
+                {
+                    points = points + 1;
+                }
+                if (setDay.equals(goalDay))
+                {
+                    points = points + 1;
+                }
+                if (setMonth.equals(goalMonth))
+                {
+                    points = points + 1;
+                }
+                if (setAM.equals(goalAM))
+                {
+                    points = points + 1;
+                }
                 boolean result = false;
                 double time = 10.1;
                 try {
                     SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
                     Date resultdate = new Date(System.currentTimeMillis());
-                    outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time + " " + result + "\n");
+                    outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time + " " + result + " " + points + "\n");
                 } catch (Exception e) {
 
                 }

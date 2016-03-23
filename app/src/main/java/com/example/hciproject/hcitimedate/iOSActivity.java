@@ -36,7 +36,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
     OutputStreamWriter outputWriter;
     TextView txtDate, txtTime;
     Button btnDatePicker, btnTimePicker, ok;
-    private int mYear, mMonth, mDay, mHour, mMinute;
+    //private int mYear, mMonth, mDay, mHour, mMinute;
     long startTime, endTime;
     DatePickerDialog datePickerDialog;
     TimePickerDialog timePickerDialog;
@@ -51,6 +51,8 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
     int iMin = 0;
     int iDay = 1;
     int iMonth = 6;
+    String setHour = "12", setMin = "00", setDay = "01", setMonth="07";
+    String setAM = "AM";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +126,6 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
                         //if (run.equals("2")) {
                         //    ctimer = new MyCountDown(11000, 1000);
                         //}
-                        // TODO: start timer
                         dialog.dismiss();
                     }
                 });
@@ -148,7 +149,6 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
                         //if (run.equals("2")) {
                         //    ctimer = new MyCountDown(11000, 1000);
                         //}
-                        // TODO: start timer
                         dialog.dismiss();
                     }
                 });
@@ -163,7 +163,6 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
         builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 //startTime = System.nanoTime();
-                // TODO: start timer
                 dialog.dismiss();
             }
         });
@@ -207,9 +206,9 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
                 countdownStarted = true;
             }
             final Calendar c = Calendar.getInstance();
-            mYear = c.get(Calendar.YEAR);
-            mMonth = c.get(Calendar.MONTH);
-            mDay = c.get(Calendar.DAY_OF_MONTH);
+            //mYear = c.get(Calendar.YEAR);
+            //mMonth = c.get(Calendar.MONTH);
+            //mDay = c.get(Calendar.DAY_OF_MONTH);
 
 
             datePickerDialog = new DatePickerDialog(this,
@@ -246,20 +245,22 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
                             //input_dates[counter] = monthOfYear+1 + "-" + dayOfMonth + "-" + "2016";
                             Log.v("Counter:",String.valueOf(counter));
                             Log.v("Input Date:", input_dates[counter]);
-                            txtDate.setText(getMonth(monthOfYear +1) + " " + dayOfMonth);
+                            txtDate.setText(getMonth(monthOfYear + 1) + " " + dayOfMonth);
+                            setMonth =input_dates[counter].split("-")[0];
+                            setDay = input_dates[counter].split("-")[1];
                         }
                     }, 2016, iMonth, iDay);
             datePickerDialog.show();
         }
         if (v == btnTimePicker) {
-            if (run.equals("2") && countdownStarted == false) {
+            if (run.equals("2") && !countdownStarted) {
                 ctimer = new MyCountDown(11000, 1000);
                 countdownStarted = true;
             }
             // Get Current Time
-            final Calendar c = Calendar.getInstance();
-            mHour = c.get(Calendar.HOUR_OF_DAY);
-            mMinute = c.get(Calendar.MINUTE);
+            //final Calendar c = Calendar.getInstance();
+            //mHour = c.get(Calendar.HOUR_OF_DAY);
+            //mMinute = c.get(Calendar.MINUTE);
 
             // Launch Time Picker Dialog
             timePickerDialog = new TimePickerDialog(this,
@@ -331,7 +332,9 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
                                 }
                                 //txtTime.setText(hourOfDay + ":" + minute + " AM");
                             }
-
+                            setHour = txtTime.getText().toString().split(" ")[0].split(":")[0];
+                            setMin = txtTime.getText().toString().split(" ")[0].split(":")[1];
+                            setAM = txtTime.getText().toString().split(" ")[1];
                             input_times[counter] = txtTime.getText().toString();
                             Log.v("Counter:",String.valueOf(counter));
                             Log.v("Input Date:", input_times[counter]);
@@ -352,16 +355,35 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
             //Check if accurate
             boolean result = false;
             //01-01-2016
-            String[] date = txtDate.getText().toString().split(" ");
+            String goalHour = (goal_times[counter].split(" "))[0].split(":")[0];
+            String goalMin = (goal_times[counter].split(" "))[0].split(":")[1];
+            String goalDay = (goal_dates[counter].split("-"))[1];
+            String goalMonth = (goal_dates[counter].split("-"))[0];
+            String goalAM = (goal_times[counter].split(" "))[1].split(":")[0];
+            int points = 0;
+            if (setHour.equals(goalHour))
+            {
+                points  = points + 1;
+            }
+            if (setMin.equals(goalMin))
+            {
+                points = points + 1;
+            }
+            if (setDay.equals(goalDay))
+            {
+                points = points + 1;
+            }
+            if (setMonth.equals(goalMonth))
+            {
+                points = points + 1;
+            }
+            if (setAM.equals(goalAM))
+            {
+                points = points + 1;
+            }
             //if (input_times[counter])
-            if (input_times[counter].equals(goal_times[counter]) && goal_dates[counter].equals(input_dates[counter]))
-            {
-                result = true;
-            }
-            else
-            {
-                result = false;
-            }
+            result = input_times[counter].equals(goal_times[counter]) && goal_dates[counter].equals(input_dates[counter]);
+
             endTime = System.nanoTime();
             counter++;
 
@@ -404,7 +426,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
                 SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
                 Date resultdate = new Date(System.currentTimeMillis());
                 Log.v("Time:", time);
-                outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time.toString() + " " + result + "\n");
+                outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time + " " + result + " "+ points+"\n");
                 //outputWriter.write(participant_id + " " + System.currentTimeMillis() + " " + time + " " + result + "\n");
             }
             catch (Exception e)
@@ -508,12 +530,37 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
             counter++;
             if (counter < goal_times.length) {
                 countdownStarted = false;
-                boolean result = false;
+                String goalHour = (goal_times[counter].split(" "))[0].split(":")[0];
+                String goalMin = (goal_times[counter].split(" "))[0].split(":")[1];
+                String goalDay = (goal_dates[counter].split("-"))[1];
+                String goalMonth = (goal_dates[counter].split("-"))[0];
+                String goalAM = (goal_times[counter].split(" "))[1].split(":")[0];
+                int points = 0;
+                if (setHour.equals(goalHour))
+                {
+                    points  = points + 1;
+                }
+                if (setMin.equals(goalMin))
+                {
+                    points = points + 1;
+                }
+                if (setDay.equals(goalDay))
+                {
+                    points = points + 1;
+                }
+                if (setMonth.equals(goalMonth))
+                {
+                    points = points + 1;
+                }
+                if (setAM.equals(goalAM))
+                {
+                    points = points + 1;
+                }
                 double time = 10.1;
                 try {
                     SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
                     Date resultdate = new Date(System.currentTimeMillis());
-                    outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time + " " + result + "\n");
+                    outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time + " " + "false" + " "+ points + "\n");
                     //outputWriter.write("!~!" + participant_id + " " + System.currentTimeMillis() + " " + time + " " + result + "\n");
                 }
                 catch (Exception e)

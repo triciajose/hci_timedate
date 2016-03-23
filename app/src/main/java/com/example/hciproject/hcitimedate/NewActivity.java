@@ -1285,7 +1285,7 @@ public class NewActivity extends ActionBarActivity {
 
         @Override
         public void onFinish() {
-            secs = averageTime;
+            secs = 20;
             counter++;
             if (counter < goal_times.length && run.equals("2") || counter < MainActivity.TRIALS && run.equals("1")) {
                 countdownStarted = false;

@@ -539,7 +539,7 @@ public class AndroidActivity extends ActionBarActivity implements
 
         @Override
         public void onFinish() {
-            secs = averageTime;
+            secs = 20;
             counter++;
             if (counter < goal_times.length) {
                 countdownStarted = false;

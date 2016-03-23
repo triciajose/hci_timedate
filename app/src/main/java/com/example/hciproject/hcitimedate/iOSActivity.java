@@ -45,6 +45,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
     CountDownTimer ctimer;
     String run = "1";
     boolean countdownStarted = false;
+    public int request = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
 
         if (extras != null) {
             run = extras.getString("run");
+            request = extras.getInt("request");
             Log.v("run",String.valueOf(run));
         }
         Intent intent = getIntent();
@@ -106,7 +108,18 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
             counter = counter + 10;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("You're about to start trials on a new interface. There will be "+ goal_times.length /2 +" trials for this interface.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
+        if (run.equals("2")) {
+            if (request == MainActivity.FORTH_REQUEST){
+                builder.setMessage("Start TASK 2! Instructions! You're about to start timed trials on a new interface. There will be " + goal_times.length / 2 + " trials for this interface and you have 10 seconds for each trial.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter) + " and press OK.");
+            }
+            else {
+                builder.setMessage("You're about to start timed trials on a new interface. There will be " + goal_times.length / 2 + " trials for this interface and you have 10 seconds for each trial.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter) + " and press OK.");
+            }        }
+        else
+        {
+            builder.setMessage("You're about to start trials on a new interface. There will be " + goal_times.length / 2 + " trials for this interface.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter) + " and press OK");
+        }
+        //builder.setMessage("You're about to start trials on a new interface. There will be "+ goal_times.length /2 +" trials for this interface.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
         builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 //startTime = System.nanoTime();
@@ -193,7 +206,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
                             Log.v("Input Date:", input_dates[counter]);
                             txtDate.setText(getMonth(monthOfYear +1) + " " + dayOfMonth);
                         }
-                    }, mYear, mMonth, mDay);
+                    }, 2016, 6, 1);
             datePickerDialog.show();
         }
         if (v == btnTimePicker) {
@@ -269,7 +282,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
                             Log.v("Counter:",String.valueOf(counter));
                             Log.v("Input Date:", input_times[counter]);
                         }
-                    }, mHour, mMinute, false);
+                    }, 12, 0, false);
             timePickerDialog.show();
         }
 

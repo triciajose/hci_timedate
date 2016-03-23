@@ -1,5 +1,7 @@
 package com.example.hciproject.hcitimedate;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -246,6 +248,7 @@ public class MainActivity extends ActionBarActivity {
         intent.putExtra(GOAL_TIMES, times);
         intent.putExtra("ID",participant_id);
         intent.putExtra("run", run);
+        intent.putExtra("request",request);
         startActivityForResult(intent, request);
     }
 
@@ -255,6 +258,7 @@ public class MainActivity extends ActionBarActivity {
         intent.putExtra(GOAL_TIMES, times);
         intent.putExtra("ID",participant_id);
         intent.putExtra("run", run);
+        intent.putExtra("request",request);
         startActivityForResult(intent, request);
     }
 
@@ -265,6 +269,7 @@ public class MainActivity extends ActionBarActivity {
         intent.putExtra(GOAL_TIMES, times);
         intent.putExtra("ID",participant_id);
         intent.putExtra("run", run);
+        intent.putExtra("request",request);
         startActivityForResult(intent, request);
     }
 
@@ -442,7 +447,21 @@ public class MainActivity extends ActionBarActivity {
         if (requestCode == SIXTH_REQUEST) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                    finish();
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Well done! Please hand the phone back.");
+                builder.setPositiveButton("Complete", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //startTime = System.nanoTime();
+                        //if (run.equals("2")) {
+                        //    ctimer = new MyCountDown(11000, 1000);
+                        //}
+                        // TODO: start timer
+                        dialog.dismiss();
+                    }
+                });
+                builder.create();
+                builder.show();
+                //finish();
                 }
             }
 

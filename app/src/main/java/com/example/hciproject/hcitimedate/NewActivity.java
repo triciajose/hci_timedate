@@ -52,6 +52,7 @@ public class NewActivity extends ActionBarActivity {
     boolean countdownStarted = false;
     public String[] input_dates = new String[20];
     public String[] input_times = new String[20];
+    public int request = 0;
 
 
 
@@ -74,6 +75,7 @@ public class NewActivity extends ActionBarActivity {
         if (extras != null) {
             left = extras.getBoolean(MainActivity.LEFT);
             run = extras.getString("run");
+            request = extras.getInt("request");
             Log.v("left",String.valueOf(left));
         }
         participant_id = intent.getStringExtra("ID");
@@ -105,7 +107,19 @@ public class NewActivity extends ActionBarActivity {
         {
             counter = counter + 10;
         }
-        builder.setMessage("You're about to start trials on a new interface. There will be "+ goal_times.length /2 +" trials for this interface.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
+        if (run.equals("2")) {
+            if (request == MainActivity.FORTH_REQUEST){
+                builder.setMessage("Start TASK 2! Instructions! You're about to start timed trials on a new interface. There will be " + goal_times.length / 2 + " trials for this interface and you have 10 seconds for each trial.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter) + " and press OK.");
+            }
+            else {
+                builder.setMessage("You're about to start timed trials on a new interface. There will be " + goal_times.length / 2 + " trials for this interface and you have 10 seconds for each trial.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter) + " and press OK.");
+            }
+        }
+        else
+        {
+            builder.setMessage("You're about to start trials on a new interface. There will be " + goal_times.length / 2 + " trials for this interface.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter) + " and press OK");
+        }
+        //builder.setMessage("You're about to start trials on a new interface. There will be "+ goal_times.length /2 +" trials for this interface.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
         builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 startTime = System.nanoTime();

@@ -38,7 +38,7 @@ public class AndroidActivity extends ActionBarActivity implements
         public int secs;
         //public int last = 1;
         Button btnDatePicker, btnTimePicker, ok;
-        TextView txtDate, txtTime, timer;
+        TextView txtDate, txtTime;
         long startTime, endTime;
         private int mYear, mMonth, mDay, mHour, mMinute;
         OutputStreamWriter outputWriter;
@@ -48,6 +48,7 @@ public class AndroidActivity extends ActionBarActivity implements
         String participant_id;
         String run = "1";
         boolean countdownStarted = false;
+    public int request = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +64,7 @@ public class AndroidActivity extends ActionBarActivity implements
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             run = extras.getString("run");
+            request = extras.getInt("request");
             Log.v("run",String.valueOf(run));
         }
         participant_id = intent.getStringExtra("ID");
@@ -95,7 +97,6 @@ public class AndroidActivity extends ActionBarActivity implements
         txtDate=(TextView)findViewById(R.id.in_date);
         txtTime=(TextView)findViewById(R.id.in_time);
 
-        timer = (TextView) findViewById(R.id.timer);
 
 
         goal_dates = intent.getStringExtra(MainActivity.GOAL_DATES).split(",");
@@ -107,7 +108,18 @@ public class AndroidActivity extends ActionBarActivity implements
         {
             counter = counter + 10;
         }
-        builder.setMessage("You're about to start trials on a new interface. There will be "+ goal_times.length /2 +" trials for this interface.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
+        if (run.equals("2")) {
+            if (request == MainActivity.FORTH_REQUEST){
+                builder.setMessage("Start TASK 2! Instructions! You're about to start timed trials on a new interface. There will be " + goal_times.length / 2 + " trials for this interface and you have 10 seconds for each trial.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter) + " and press OK.");
+            }
+            else {
+                builder.setMessage("You're about to start timed trials on a new interface. There will be " + goal_times.length / 2 + " trials for this interface and you have 10 seconds for each trial.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter) + " and press OK.");
+            }
+        }
+        else
+        {
+            builder.setMessage("You're about to start trials on a new interface. There will be " + goal_times.length / 2 + " trials for this interface.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter) + " and press OK");
+        }
         builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 //startTime = System.nanoTime();
@@ -120,7 +132,7 @@ public class AndroidActivity extends ActionBarActivity implements
         });
         builder.create();
         builder.show();
-        getSupportActionBar().setTitle(getTitle(counter));
+            getSupportActionBar().setTitle(getTitle(counter));
 
         btnDatePicker.setOnClickListener(this);
         btnTimePicker.setOnClickListener(this);
@@ -198,7 +210,7 @@ public class AndroidActivity extends ActionBarActivity implements
                             Log.v("Input Date:", input_dates[counter]);
                             txtDate.setText(getMonth(monthOfYear +1) + " " + dayOfMonth);
                         }
-                    }, mYear, mMonth, mDay);
+                    }, 2016, 6, 1);
             datePickerDialog.show();
         }
         if (v == btnTimePicker) {
@@ -274,7 +286,7 @@ public class AndroidActivity extends ActionBarActivity implements
                             Log.v("Counter:",String.valueOf(counter));
                             Log.v("Input Date:", input_times[counter]);
                         }
-                    }, mHour, mMinute, false);
+                    }, 12, 00, false);
             timePickerDialog.show();
         }
         if (v == ok)
@@ -330,7 +342,6 @@ public class AndroidActivity extends ActionBarActivity implements
             {
                 time = time + "." +millisElapsed;
             }
-            timer.setText(time);
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
                 Date resultdate = new Date(System.currentTimeMillis());

@@ -107,7 +107,7 @@ public class AndroidActivity extends ActionBarActivity implements
         {
             counter = counter + 10;
         }
-        builder.setMessage(getTitle(counter));
+        builder.setMessage("You're about to start trials on a new interface. There will be "+ goal_times.length /2 +" trials for this interface.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
         builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 //startTime = System.nanoTime();
@@ -346,7 +346,7 @@ public class AndroidActivity extends ActionBarActivity implements
             if (counter < goal_times.length && run.equals("2") || counter < 10 && run.equals("1")) {
                 countdownStarted = false;
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage(getTitle(counter));
+                builder.setMessage("Ready for the next trial?\n\nPlease enter\n" + getTitle(counter));
                 builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //startTime = System.nanoTime();
@@ -419,8 +419,8 @@ public class AndroidActivity extends ActionBarActivity implements
     public String getTitle(int counter) {
         String month = getMonth(Integer.parseInt(goal_dates[counter].split("-")[0]));
         Log.v("month", month);
-        String dayAndYear = (goal_dates[counter].split("-")[1]);
-        String datetime = month + " " + dayAndYear + ", " + goal_times[counter];
+        String day = (goal_dates[counter].split("-")[1]);
+        String datetime = month + " " + day + ", " + goal_times[counter];
 
         return datetime;
     }
@@ -459,7 +459,7 @@ public class AndroidActivity extends ActionBarActivity implements
                     timePickerDialog.dismiss();
                 }//timePickerDialog.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(AndroidActivity.this);
-                builder.setMessage(getTitle(counter));
+                builder.setMessage("Ready for the next trial?\n\nPlease enter\n" +getTitle(counter));
                 builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //startTime = System.nanoTime();

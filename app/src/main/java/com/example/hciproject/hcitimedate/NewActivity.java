@@ -241,10 +241,10 @@ public class NewActivity extends ActionBarActivity {
 
             leftHanded = left;
 
-            selections[0] = 5;
-            selections[1] = 10;
-            selections[2] = 2;
-            selections[3] = 45;
+            selections[0] = 6;
+            selections[1] = 1;
+            selections[2] = 12;
+            selections[3] = 0;
             selections[4] = 1;
 
 
@@ -941,10 +941,10 @@ public class NewActivity extends ActionBarActivity {
 
         public void reset()
         {
-            selections[0] = 5;
-            selections[1] = 10;
-            selections[2] = 2;
-            selections[3] = 45;
+            selections[0] = 6;
+            selections[1] = 1;
+            selections[2] = 12;
+            selections[3] = 0;
             selections[4] = 1;
 
 

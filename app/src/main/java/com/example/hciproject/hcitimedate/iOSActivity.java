@@ -262,8 +262,14 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
                         @Override
                         public void onTimeSet(TimePicker view, int hourOfDay,
                                               int minute) {
-                            if (hourOfDay > 12) {
-                                hourOfDay = hourOfDay - 12;
+                            System.out.println("Hour: " + hourOfDay + "Minutes: " + minute);
+
+                            if (hourOfDay >= 12) {
+                                if (hourOfDay != 12)
+                                {
+                                    hourOfDay = hourOfDay - 12;
+
+                                }
                                 if (hourOfDay < 10)
                                 {
                                     if (minute < 10)
@@ -289,6 +295,10 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
                                 //txtTime.setText(hourOfDay + ":" + minute + " PM");
                             } else
                             {
+                                if (hourOfDay == 0)
+                                {
+                                    hourOfDay = 12;
+                                }
                                 if (hourOfDay < 10)
                                 {
                                     if (minute < 10)

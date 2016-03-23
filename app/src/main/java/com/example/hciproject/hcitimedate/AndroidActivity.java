@@ -264,8 +264,12 @@ public class AndroidActivity extends ActionBarActivity implements
                         @Override
                         public void onTimeSet(TimePicker view, int hourOfDay,
                                               int minute) {
-                            if (hourOfDay > 12) {
-                                hourOfDay = hourOfDay - 12;
+                            System.out.println("Hour: " + hourOfDay + "Minutes: " + minute);
+                            if (hourOfDay >= 12) {
+                                if (hourOfDay != 12)
+                                {
+                                    hourOfDay = hourOfDay - 12;
+                                }
                                 if (hourOfDay < 10)
                                 {
                                     if (minute < 10)
@@ -289,8 +293,13 @@ public class AndroidActivity extends ActionBarActivity implements
                                     }
                                 }
                                 //txtTime.setText(hourOfDay + ":" + minute + " PM");
-                            } else
+                            }
+                            else
                             {
+                                if (hourOfDay == 0)
+                                {
+                                    hourOfDay = 12;
+                                }
                                 if (hourOfDay < 10)
                                 {
                                     if (minute < 10)
@@ -313,11 +322,10 @@ public class AndroidActivity extends ActionBarActivity implements
                                         txtTime.setText(hourOfDay + ":" + minute + " AM");
                                     }
                                 }
-                                //txtTime.setText(hourOfDay + ":" + minute + " AM");
                             }
 
                             input_times[counter] = txtTime.getText().toString();
-                            Log.v("Counter:",String.valueOf(counter));
+                            Log.v("Counter:", String.valueOf(counter));
                             Log.v("Input Date:", input_times[counter]);
                         }
                     }, 12, 00, false);

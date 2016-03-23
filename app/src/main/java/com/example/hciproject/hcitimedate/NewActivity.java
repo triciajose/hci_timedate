@@ -249,6 +249,7 @@ public class NewActivity extends ActionBarActivity {
         private boolean leftHanded;
 
         private float okButtonTopLeftX, okButtonTopLeftY, okButtonBottomRightX, okButtonBottomRightY;
+        private boolean hasTouched;
         //public boolean okTouched;
 
         public DrawingView(Context c) {
@@ -311,6 +312,7 @@ public class NewActivity extends ActionBarActivity {
             startTouchTimerCancelled = false;
 
             okTouched = false;
+            hasTouched = false;
 
 
         }
@@ -883,6 +885,8 @@ public class NewActivity extends ActionBarActivity {
             startTouchY = y;
             startTouchX = x;
 
+            hasTouched = true;
+
             startTouchTimerCancelled = false;
             if(touchRegion != 0)
                 new Handler().postDelayed(startTouchTimer, 200 );
@@ -926,35 +930,33 @@ public class NewActivity extends ActionBarActivity {
         }
 
         private void touch_up() {
-            mPath.lineTo(mX, mY);
-            circlePath.reset();
-            // kill this so we don't double draw
-            mPath.reset();
+            if(hasTouched) {
+                mPath.lineTo(mX, mY);
+                circlePath.reset();
+                // kill this so we don't double draw
+                mPath.reset();
 
-            if(swiping == 0) {
-                if(touchRegion == 0) {
-                    if (testOkButtonTouch(startTouchX, startTouchY))
-                        okTouch();
-                }
-                else {
-                    updateSelection(startTouchY);
-                    startChange();
+                if (swiping == 0) {
+                    if (touchRegion == 0) {
+                        if (testOkButtonTouch(startTouchX, startTouchY))
+                            okTouch();
+                    } else {
+                        updateSelection(startTouchY);
+                        startChange();
+                    }
+
+                } else if (swiping == 4) {
+                    if (touchRegion == 0) {
+                        if (testOkButtonTouch(startTouchX, startTouchY))
+                            okTouch();
+                    } else
+                        startChange();
                 }
 
+                swiping = 0;
+
+                startTouchTimerCancelled = true;
             }
-            else if(swiping == 4)
-            {
-                if(touchRegion == 0) {
-                    if (testOkButtonTouch(startTouchX, startTouchY))
-                        okTouch();
-                }
-                else
-                    startChange();
-            }
-
-            swiping = 0;
-
-            startTouchTimerCancelled = true;
 
 
         }
@@ -1008,9 +1010,10 @@ public class NewActivity extends ActionBarActivity {
             releaseTime = 0;
             justReleased = false;
 
-            startTouchTimerCancelled = false;
+            startTouchTimerCancelled = true;
 
             okTouched = false;
+            hasTouched = false;
             invalidate();
         }
 

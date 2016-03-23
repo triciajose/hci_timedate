@@ -47,6 +47,10 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
     boolean countdownStarted = false;
     public int request = 0;
     long averageTime = 0;
+    int iHour = 12;
+    int iMin = 0;
+    int iDay = 1;
+    int iMonth = 6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -214,6 +218,8 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
                         @Override
                         public void onDateSet(DatePicker view, int year,
                                               int monthOfYear, int dayOfMonth) {
+                            iMonth = monthOfYear;
+                            iDay = dayOfMonth;
                             int month = monthOfYear + 1;
                             if (month < 10)
                             {
@@ -242,7 +248,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
                             Log.v("Input Date:", input_dates[counter]);
                             txtDate.setText(getMonth(monthOfYear +1) + " " + dayOfMonth);
                         }
-                    }, 2016, 6, 1);
+                    }, 2016, iMonth, iDay);
             datePickerDialog.show();
         }
         if (v == btnTimePicker) {
@@ -262,6 +268,8 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
                         @Override
                         public void onTimeSet(TimePicker view, int hourOfDay,
                                               int minute) {
+                            iHour = hourOfDay;
+                            iMin = minute;
                             System.out.println("Hour: " + hourOfDay + "Minutes: " + minute);
 
                             if (hourOfDay >= 12) {
@@ -328,12 +336,16 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
                             Log.v("Counter:",String.valueOf(counter));
                             Log.v("Input Date:", input_times[counter]);
                         }
-                    }, 12, 0, false);
+                    }, iHour, iMin, false);
             timePickerDialog.show();
         }
 
         if (v == ok)
         {
+            iHour = 12;
+            iMin = 0;
+            iDay = 1;
+            iMonth = 6;
             if (ctimer!=null) {
                 ctimer.cancel();
             }

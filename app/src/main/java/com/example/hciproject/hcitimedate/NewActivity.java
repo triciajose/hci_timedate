@@ -698,31 +698,57 @@ public class NewActivity extends ActionBarActivity {
 
                 // Days
 
+//                dayEnd = startX + regionSize;
+//                textPaint.setTextSize(numberSize);
+//
+//                float rulerNumOffset = numberSize / 2;
+//
+//                float division = (float)0.5 * regionSize;
+//
+//                for (int i = 1; i <= daysPerMonth[selections[0]]; i++) {
+//                    if (i == selections[1]) {
+//                        layoutPaint.setColor(selectionColour);
+//                        textPaint.setColor(selectionColour);
+//                        canvas.drawText(Integer.toString(i), dayEnd - (float) 1.5 * division, topOffset + (i - 1) * daysSpacing + rulerNumOffset, textPaint);
+//                        canvas.drawRect(dayEnd - (float) 1.0 * division, topOffset + (i - 1) * daysSpacing - ruleSize / 2, dayEnd, topOffset + (i - 1) * daysSpacing + ruleSize / 2, layoutPaint);
+//                        layoutPaint.setColor(rulerColour);
+//                        textPaint.setColor(textColour);
+//                    } else {
+//                        if (i % 2 == 0) {
+//                            canvas.drawText(Integer.toString(i), dayEnd - (float) 1.5 * division, topOffset + (i - 1) * daysSpacing + rulerNumOffset, textPaint);
+//                            canvas.drawRect(dayEnd - (float) 1.0 * division, topOffset + (i - 1) * daysSpacing - ruleSize / 2, dayEnd, topOffset + (i - 1) * daysSpacing + ruleSize / 2, layoutPaint);
+//                        } else {
+//                            canvas.drawRect(dayEnd - (float) 0.5 * division, topOffset + (i - 1) * daysSpacing - ruleSize / 4, dayEnd, topOffset + (i - 1) * daysSpacing + ruleSize / 4, layoutPaint);
+//                        }
+//                    }
+//
+//                }
+
+
+
                 dayEnd = startX + regionSize;
                 textPaint.setTextSize(numberSize);
-
                 float rulerNumOffset = numberSize / 2;
+                float dayCharOffset = (float) 0.25 * numberSize;
 
-                float division = (float)0.5 * regionSize;
 
+                // Draw selection
+                layoutPaint.setColor(selectionColour);
+                canvas.drawRect(startX, topOffset + (selections[1] - 1) * daysSpacing, dayEnd, topOffset + selections[1] * daysSpacing, layoutPaint);
+                layoutPaint.setColor(rulerColour);
+
+
+
+                float division = regionSize;
+
+                canvas.drawRect(startX, topOffset - ruleSize / 4, dayEnd, topOffset + ruleSize / 4, layoutPaint);
                 for (int i = 1; i <= daysPerMonth[selections[0]]; i++) {
-                    if (i == selections[1]) {
-                        layoutPaint.setColor(selectionColour);
-                        textPaint.setColor(selectionColour);
-                        canvas.drawText(Integer.toString(i), dayEnd - (float) 1.5 * division, topOffset + (i - 1) * daysSpacing + rulerNumOffset, textPaint);
-                        canvas.drawRect(dayEnd - (float) 1.0 * division, topOffset + (i - 1) * daysSpacing - ruleSize / 2, dayEnd, topOffset + (i - 1) * daysSpacing + ruleSize / 2, layoutPaint);
-                        layoutPaint.setColor(rulerColour);
-                        textPaint.setColor(textColour);
-                    } else {
-                        if (i % 2 == 0) {
-                            canvas.drawText(Integer.toString(i), dayEnd - (float) 1.5 * division, topOffset + (i - 1) * daysSpacing + rulerNumOffset, textPaint);
-                            canvas.drawRect(dayEnd - (float) 1.0 * division, topOffset + (i - 1) * daysSpacing - ruleSize / 2, dayEnd, topOffset + (i - 1) * daysSpacing + ruleSize / 2, layoutPaint);
-                        } else {
-                            canvas.drawRect(dayEnd - (float) 0.5 * division, topOffset + (i - 1) * daysSpacing - ruleSize / 4, dayEnd, topOffset + (i - 1) * daysSpacing + ruleSize / 4, layoutPaint);
-                        }
-                    }
+                    canvas.drawText(Integer.toString(i), startX + division / 2, topOffset + i * daysSpacing - dayCharOffset, textPaint);
+                    canvas.drawRect(startX, topOffset - ruleSize / 4 + i * daysSpacing, dayEnd, topOffset + ruleSize / 4 + i * daysSpacing, layoutPaint);
 
                 }
+
+
             } else if (region == 2) {
 
                 // Hours
@@ -841,13 +867,21 @@ public class NewActivity extends ActionBarActivity {
                 else
                     selections[0] = (int)(y - topOffset) / (int)monthSpacing;
             }
+//            else if (touchRegion == 2) {
+//                if(y < topOffset)
+//                    selections[1] = 1;
+//                else if(y >= topOffset + (daysPerMonth[selections[0]] - 1) * daysSpacing)
+//                    selections[1] = daysPerMonth[selections[0]];
+//                else
+//                    selections[1] = (int)((y - topOffset + daysSpacing/2.0) / daysSpacing) + 1;
+//            }
             else if (touchRegion == 2) {
                 if(y < topOffset)
                     selections[1] = 1;
                 else if(y >= topOffset + (daysPerMonth[selections[0]] - 1) * daysSpacing)
                     selections[1] = daysPerMonth[selections[0]];
                 else
-                    selections[1] = (int)((y - topOffset + daysSpacing/2.0) / daysSpacing) + 1;
+                    selections[1] = (int)((y - topOffset + daysSpacing) / daysSpacing);
             }
             else if (touchRegion == 3) {
                 if(y < topOffset)

@@ -34,7 +34,7 @@ public class AndroidActivity extends ActionBarActivity implements
         public String[] input_dates = new String[2*MainActivity.TRIALS];
         public String[] input_times = new String[2*MainActivity.TRIALS];
         public int counter = 0;
-        public long secs;
+        public long secs = MainActivity.TIMEOUT;
         //public int last = 1;
         Button btnDatePicker, btnTimePicker, ok;
         TextView txtDate, txtTime;

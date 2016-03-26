@@ -47,7 +47,7 @@ public class NewActivity extends ActionBarActivity {
     String run = "1";
     long startTime, endTime;
     CountDownTimer ctimer;
-    public long secs;
+    int secs = MainActivity.TIMEOUT;
     OutputStreamWriter outputWriter;
     boolean countdownStarted = false;
     public String[] input_dates = new String[2*MainActivity.TRIALS];
@@ -128,7 +128,7 @@ public class NewActivity extends ActionBarActivity {
                     builder2.show();
             }
             else {
-                builder.setMessage("You're about to start timed trials on the novel interface. There will be " + goal_times.length / 2 + " trials for this interface and you have\" + MainActivity.TIMEOUT + \"seconds for each trial.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
+                builder.setMessage("You're about to start timed trials on the novel interface. There will be " + goal_times.length / 2 + " trials for this interface and you have" + MainActivity.TIMEOUT + "seconds for each trial.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
             }
         }
         else

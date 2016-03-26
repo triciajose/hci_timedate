@@ -40,7 +40,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
     long startTime, endTime;
     DatePickerDialog datePickerDialog;
     TimePickerDialog timePickerDialog;
-    long secs;
+    int secs =MainActivity.TIMEOUT;
     String participant_id;
     CountDownTimer ctimer;
     String run = "1";
@@ -133,7 +133,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
                 builder2.show();
             }
             else {
-                builder.setMessage("You're about to start timed trials on a new interface. There will be " + goal_times.length / 2 + " trials for this interface and you have 10 seconds for each trial.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
+                builder.setMessage("You're about to start timed trials on a new interface. There will be " + goal_times.length / 2 + " trials for this interface and you have"+ MainActivity.TIMEOUT+ "seconds for each trial.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
             }
         }
         else

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">HCI:TimeDate</string>
 
-    <string name="instructions"><b>INSTRUCTIONS</b>\nYou will be entering a series of dates and times across the 3 interfaces. You will be doing this over 2 different tasks.  For each task, we will ask you to complete 5 trials.\n\n<b>TASK 1: accuracy</b>\nFor this first task, select the date and time as accurately as possible. Press ok when finished. You will do this 5 times.\n\n<b>TASK 2: speed</b>\nFor this second task, select the date and time as quickly as possible. You will be provided with a limited amount of time, so make your selection quickly. Press ok when finished. You will do this 5 times.\n\nFor each of the 5 trials, you will be provided with a different date and time.  If you forget, the date and time will be listed at the top of your screen.</string>
+    <string name="instructions"><b>INSTRUCTIONS</b>\nYou will be entering a series of dates and times across the 3 interfaces. You will be doing this over 2 different tasks.  For each task, we will ask you to complete 5 trials.\n\n<b>TASK 1: accuracy</b>\nFor this first task, select the date and time as accurately as possible. Press ok when finished. You will do this 5 times.\n\n<b>TASK 2: speed</b>\nFor this second task, select the date and time as quickly as possible. You will be provided with a limited amount of time, so make your selection quickly. Press ok when finished. You will do this 5 times.\n\nFor each of the 4 trials, you will be provided with a different date and time.  If you forget, the date and time will be listed at the top of your screen.</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_android">Android Activity</string>
 

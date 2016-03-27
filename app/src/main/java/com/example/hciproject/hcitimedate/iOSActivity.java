@@ -117,7 +117,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         if (run.equals("2")) {
             if (request == MainActivity.FORTH_REQUEST){
-                builder.setMessage("TASK 2\n\nFor this task, select the date and time as quickly as possible.  You will have" + MainActivity.TIMEOUT + "seconds, so don’t worry about going back and correcting errors if you make one, just keep going. Don’t worry about selecting a year, you can leave the year defaulted at 2016. Press ok as soon as you’ve finished. You will then hit start and repeat this until you have done a total of 5 trials. Once complete, you will be prompted to hand back the phone. ");
+                builder.setMessage("TASK 2\n\nFor this task, select the date and time as quickly as possible.  You will have " + MainActivity.TIMEOUT + " seconds, so don’t worry about going back and correcting errors if you make one, just keep going. Don’t worry about selecting a year, you can leave the year defaulted at 2016. Press ok as soon as you’ve finished. You will then hit start and repeat this until you have done a total of " +goal_times.length / 2  + " trials. Once complete, you will be prompted to hand back the phone. ");
                 AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
                 builder2.setMessage("You're about to start trials on an iOS-like interface. There will be " + goal_times.length / 2 + " trials for this interface.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
                 builder2.setPositiveButton("Start!", new DialogInterface.OnClickListener() {
@@ -133,14 +133,14 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
                 builder2.show();
             }
             else {
-                builder.setMessage("You're about to start timed trials on a new interface. There will be " + goal_times.length / 2 + " trials for this interface and you have"+ MainActivity.TIMEOUT+ "seconds for each trial.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
+                builder.setMessage("You're about to start timed trials on a new interface. There will be " + goal_times.length / 2 + " trials for this interface and you have "+ MainActivity.TIMEOUT+ " seconds for each trial.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
             }
         }
         else
         {
             if (request == MainActivity.FIRST_REQUEST)
             {
-                builder.setMessage("TASK 1\n\nFor this task, select the date and time as accurately as possible. Don’t worry about selecting a year, you can leave the year defaulted at 2016. Press ok as soon as you’ve finished. You will then hit start and repeat this until you have done a total of 5 trials.  You will then be prompted to start Task 2.");
+                builder.setMessage("TASK 1\n\nFor this task, select the date and time as accurately as possible. Don’t worry about selecting a year, you can leave the year defaulted at 2016. Press ok as soon as you’ve finished. You will then hit start and repeat this until you have done a total of " + goal_times.length / 2 +" trials.  You will then be prompted to start Task 2.");
                 AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
                 builder2.setMessage("You're about to start trials on an iOS-like interface. There will be " + goal_times.length / 2 + " trials for this interface.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
                 builder2.setPositiveButton("Start", new DialogInterface.OnClickListener() {
@@ -202,7 +202,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
             // Get Current Date
             startTime = System.nanoTime();
             if (run.equals("2")) {
-                ctimer = new MyCountDown(11000, 1000);
+                ctimer = new MyCountDown(MainActivity.TIMEOUT*1000, 1000);
                 countdownStarted = true;
             }
             final Calendar c = Calendar.getInstance();
@@ -254,7 +254,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
         }
         if (v == btnTimePicker) {
             if (run.equals("2") && !countdownStarted) {
-                ctimer = new MyCountDown(11000, 1000);
+                ctimer = new MyCountDown(MainActivity.TIMEOUT*1000, 1000);
                 countdownStarted = true;
             }
             // Get Current Time

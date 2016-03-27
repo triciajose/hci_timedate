@@ -27,7 +27,7 @@ public class MainActivity extends ActionBarActivity {
     public final static String LEFT = "com.mycompany.myfirstapp.LEFT";
     public final static String TASK_NO = "1";
     public final static int TRIALS = 4;
-    public final static int TIMEOUT = 30;
+    public final static int TIMEOUT = 20;
 
     //month-date-year
 //    String dates = "01-01-2016,05-29-2016,03-23-2016,04-17-2016,11-30-2016,08-02-2016,10-01-2016,09-14-2016,04-01-2016,06-11-2016";

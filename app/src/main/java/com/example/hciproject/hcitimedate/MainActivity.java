@@ -26,7 +26,7 @@ public class MainActivity extends ActionBarActivity {
     public final static String GOAL_TIMES = "com.mycompany.myfirstapp.TIMES";
     public final static String LEFT = "com.mycompany.myfirstapp.LEFT";
     public final static String TASK_NO = "1";
-    public final static int TRIALS = 5;
+    public final static int TRIALS = 4;
     public final static int TIMEOUT = 30;
 
     //month-date-year
@@ -178,9 +178,13 @@ public class MainActivity extends ActionBarActivity {
 
         int trials = 2 * TRIALS;
         // Create date and times
-        randnum = new Random();
-        dates = randomDates(trials);
-        times = randomTimes(trials);
+//        randnum = new Random();
+//        dates = randomDates(trials);
+//        times = randomTimes(trials);
+
+        dates = "03-07-2016,05-29-2016,03-23-2016,11-17-2016,09-07-2016,05-29-2016,03-23-2016,04-17-2016,";
+        times = "08:30 AM,10:13 PM,6:00 PM,2:47 PM,11:45 AM,8:59 AM,2:25 PM,6:33 PM";
+
         System.out.println(dates);
         System.out.println(times);
 

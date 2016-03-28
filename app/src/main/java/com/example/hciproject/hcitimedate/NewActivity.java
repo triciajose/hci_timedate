@@ -139,7 +139,7 @@ public class NewActivity extends ActionBarActivity {
                     builder2.show();
             }
             else {
-                builder.setMessage("You're about to start timed trials on the novel interface. There will be " + goal_times.length / 2 + " trials for this interface and you have" + MainActivity.TIMEOUT + "seconds for each trial.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
+                builder.setMessage("You're about to start timed trials on the novel interface. There will be " + goal_times.length / 2 + " trials for this interface and you have " + MainActivity.TIMEOUT + " seconds for each trial.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
                 builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         startTime = System.nanoTime();

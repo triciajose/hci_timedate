@@ -52,7 +52,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
     int iDay = 1;
     int iMonth = 6;
     String setHour = "12", setMin = "00", setDay = "01", setMonth="07";
-    String setAM = "AM";
+    String setAM = "PM";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -526,15 +526,17 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
 
         @Override
         public void onFinish() {
+            iHour = 12;
+            iMin = 0;
+            iDay = 1;
+            iMonth = 6;
             secs = MainActivity.TIMEOUT;
-            counter++;
-            if (counter < goal_times.length) {
-                countdownStarted = false;
+
                 String goalHour = (goal_times[counter].split(" "))[0].split(":")[0];
                 String goalMin = (goal_times[counter].split(" "))[0].split(":")[1];
                 String goalDay = (goal_dates[counter].split("-"))[1];
                 String goalMonth = (goal_dates[counter].split("-"))[0];
-                String goalAM = (goal_times[counter].split(" "))[1].split(":")[0];
+                String goalAM = (goal_times[counter].split(" "))[1];
                 int points = 0;
                 if (setHour.equals(goalHour))
                 {
@@ -574,6 +576,10 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
                 {
                     timePickerDialog.dismiss();
                 }//timePickerDialog.dismiss();
+            counter++;
+
+            if (counter < goal_times.length) {
+                countdownStarted = false;
                 AlertDialog.Builder builder = new AlertDialog.Builder(iOSActivity.this);
                 builder.setMessage("Ready for the next trial?\n\nPlease enter\n" +getTitle(counter));
                 builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {

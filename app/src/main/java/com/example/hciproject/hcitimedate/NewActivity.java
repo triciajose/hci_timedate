@@ -55,7 +55,7 @@ public class NewActivity extends ActionBarActivity {
     public int request = 0;
     long averageTime = 0;
     String setHour = "12", setMin = "00", setDay = "01", setMonth="07";
-    String setAM = "AM";
+    String setAM = "PM";
 
 
     DrawingView dv ;
@@ -193,7 +193,7 @@ public class NewActivity extends ActionBarActivity {
                 builder.setMessage("You're about to start trials on the novel interface. There will be " + goal_times.length / 2 + " trials for this interface.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
                 builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        //startTime = System.nanoTime();
+                        startTime = System.nanoTime();
                         //if (run.equals("2")) {
                         //    ctimer = new MyCountDown(MainActivity.TIMEOUT*1000, 1000);
                         //    countdownStarted = true;
@@ -1363,14 +1363,12 @@ public class NewActivity extends ActionBarActivity {
         @Override
         public void onFinish() {
             secs = MainActivity.TIMEOUT;
-            counter++;
-            if (counter < goal_times.length && run.equals("2") || counter < MainActivity.TRIALS && run.equals("1")) {
-                countdownStarted = false;
+
                 String goalHour = (goal_times[counter].split(" "))[0].split(":")[0];
                 String goalMin = (goal_times[counter].split(" "))[0].split(":")[1];
                 String goalDay = (goal_dates[counter].split("-"))[1];
                 String goalMonth = (goal_dates[counter].split("-"))[0];
-                String goalAM = (goal_times[counter].split(" "))[1].split(":")[0];
+                String goalAM = (goal_times[counter].split(" "))[1];
                 int points = 0;
                 if (setHour.equals(goalHour))
                 {
@@ -1401,6 +1399,9 @@ public class NewActivity extends ActionBarActivity {
                 } catch (Exception e) {
 
                 }
+            counter++;
+            if (counter < goal_times.length && run.equals("2") || counter < MainActivity.TRIALS && run.equals("1")) {
+                countdownStarted = false;
                 AlertDialog.Builder builder = new AlertDialog.Builder(NewActivity.getAppContext());
                 builder.setMessage("Ready for the next trial?\n\nPlease enter\n" + getTitle(counter));
                 builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {

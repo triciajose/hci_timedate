@@ -109,7 +109,7 @@ public class NewActivity extends ActionBarActivity {
         }
         if (run.equals("2")) {
             if (request == MainActivity.FORTH_REQUEST){
-                builder.setMessage("TASK 2\n\nFor this task, select the date and time as quickly as possible.  You will have " + MainActivity.TIMEOUT + " seconds, so don’t worry about going back and correcting errors if you make one, just keep going. Don’t worry about selecting a year, you can leave the year defaulted at 2016. Press ok as soon as you’ve finished. You will then hit start and repeat this until you have done a total of " + goal_times.length / 2 +" trials. Once complete, you will be prompted to hand back the phone. ");
+                builder.setMessage("Ready for Round 2?\n\n");
                 builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //startTime = System.nanoTime();
@@ -134,7 +134,7 @@ public class NewActivity extends ActionBarActivity {
                     builder2.show();
             }
             else {
-                builder.setMessage("You're about to start timed trials on the novel interface. There will be " + goal_times.length / 2 + " trials for this interface and you have " + MainActivity.TIMEOUT + " seconds for each trial.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
+                builder.setMessage("You're about to start a new set of trials on the novel interface. There will be " + goal_times.length / 2 + " trials for this interface.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
                 builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         startTime = System.nanoTime();
@@ -148,7 +148,7 @@ public class NewActivity extends ActionBarActivity {
         {
             if (request == MainActivity.FIRST_REQUEST)
             {
-                builder.setMessage("TASK 1\n\nFor this task, select the date and time as accurately as possible. Don’t worry about selecting a year, you can leave the year defaulted at 2016. Press ok as soon as you’ve finished. You will then hit start and repeat this until you have done a total of "+goal_times.length / 2+" trials.  You will then be prompted to start Task 2.");
+                builder.setMessage("Round 1\n\nSelect the date and time as accurately as possible. Don’t worry about selecting a year, you can leave the year defaulted at 2016. Press ok as soon as you’ve finished. You will then hit start and repeat this until you have done a total of "+goal_times.length / 2+" trials.  You will then be prompted to start Round 2.");
                 builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //startTime = System.nanoTime();

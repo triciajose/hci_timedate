@@ -56,6 +56,7 @@ public class AndroidActivity extends ActionBarActivity implements
         String setHour = "12", setMin = "00", setDay = "01", setMonth="07";
         String setAM = "PM";
         boolean selectionMade = false;
+        int selectionErrors = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,7 +117,7 @@ public class AndroidActivity extends ActionBarActivity implements
         }
         if (run.equals("2")) {
             if (request == MainActivity.FORTH_REQUEST){
-                builder.setMessage("TASK 2\n\nFor this task, select the date and time as quickly as possible.  You will have " + MainActivity.TIMEOUT + " seconds, so don’t worry about going back and correcting errors if you make one, just keep going. Don’t worry about selecting a year, you can leave the year defaulted at 2016. Press ok as soon as you’ve finished. You will then hit start and repeat this until you have done a total of " +  goal_times.length / 2 + " trials. Once complete, you will be prompted to hand back the phone. ");
+                builder.setMessage("Ready for Round 2?\n\n");
                 AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
                 builder2.setMessage("You're about to start trials on an Android-like interface. There will be " + goal_times.length / 2 + " trials for this interface.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
                 builder2.setPositiveButton("Start", new DialogInterface.OnClickListener() {
@@ -133,14 +134,14 @@ public class AndroidActivity extends ActionBarActivity implements
                 builder2.show();
             }
             else {
-                builder.setMessage("You're about to start timed trials on an Android-like interface. There will be " + goal_times.length / 2 + " trials for this interface and you have " + MainActivity.TIMEOUT + " seconds for each trial.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
+                builder.setMessage("You're about to start a new set of trials on an Android-like interface. There will be " + goal_times.length / 2 + " trials for this interface. \n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
             }
         }
         else
         {
             if (request == MainActivity.FIRST_REQUEST)
             {
-                builder.setMessage("TASK 1\n\nFor this task, select the date and time as accurately as possible. Don’t worry about selecting a year, you can leave the year defaulted at 2016. Press ok as soon as you’ve finished. You will then hit start and repeat this until you have done a total of " + goal_times.length / 2+ " trials.  You will then be prompted to start Task 2.");
+                builder.setMessage("Round 1\n\n Select the date and time as accurately as possible. Don’t worry about selecting a year, you can leave the year defaulted at 2016. Press ok as soon as you’ve finished. You will then hit start and repeat this until you have done a total of " + goal_times.length / 2+ " trials.  You will then be prompted to start Round 2.");
                 AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
                 builder2.setMessage("You're about to start trials on an Android-like interface. There will be " + goal_times.length / 2 + " trials for this interface.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
                 builder2.setPositiveButton("Start", new DialogInterface.OnClickListener() {
@@ -250,6 +251,16 @@ public class AndroidActivity extends ActionBarActivity implements
                             txtDate.setText(getMonth(monthOfYear + 1) + " " + dayOfMonth);
                             setMonth =input_dates[counter].split("-")[0];
                             setDay = input_dates[counter].split("-")[1];
+                            String goalDay = (goal_dates[counter].split("-"))[1];
+                            String goalMonth = (goal_dates[counter].split("-"))[0];
+                            if (!setMonth.equals(goalMonth))
+                            {
+                                selectionErrors++;
+                            }
+                            if (!setDay.equals(goalDay))
+                            {
+                                selectionErrors++;
+                            }
                         }
                     }, 2016, iMonth, iDay);
             datePickerDialog.show();
@@ -333,6 +344,21 @@ public class AndroidActivity extends ActionBarActivity implements
                             setMin = txtTime.getText().toString().split(" ")[0].split(":")[1];
                             setAM = txtTime.getText().toString().split(" ")[1];
                             input_times[counter] = txtTime.getText().toString();
+                            String goalHour = (goal_times[counter].split(" "))[0].split(":")[0];
+                            String goalMin = (goal_times[counter].split(" "))[0].split(":")[1];
+                            String goalAM = (goal_times[counter].split(" "))[1];
+                            if (!setHour.equals(goalHour))
+                            {
+                                selectionErrors++;
+                            }
+                            if (!setMin.equals(goalMin))
+                            {
+                                selectionErrors++;
+                            }
+                            if (!setAM.equals(goalAM))
+                            {
+                                selectionErrors++;
+                            }
                             Log.v("Counter:", String.valueOf(counter));
                             Log.v("Input Date:", input_times[counter]);
                         }
@@ -345,7 +371,6 @@ public class AndroidActivity extends ActionBarActivity implements
             iMin = 0;
             iDay = 1;
             iMonth = 6;
-
             //Check if accurate
             boolean result = false;
             //01-01-2016
@@ -354,7 +379,7 @@ public class AndroidActivity extends ActionBarActivity implements
             String goalMin = (goal_times[counter].split(" "))[0].split(":")[1];
             String goalDay = (goal_dates[counter].split("-"))[1];
             String goalMonth = (goal_dates[counter].split("-"))[0];
-            String goalAM = (goal_times[counter].split(" "))[1].split(":")[0];
+            String goalAM = (goal_times[counter].split(" "))[1];
 
             System.out.println("GoalHour: " + goalHour);
             System.out.println("GoalMin: " + goalMin);
@@ -432,7 +457,7 @@ public class AndroidActivity extends ActionBarActivity implements
                 SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
                 Date resultdate = new Date(System.currentTimeMillis());
                 Log.v("Time:", time);
-                outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time.toString() + " " + result + " " + points + "\n");
+                outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time.toString() + " " + result + " " + points + " " + selectionErrors + "\n");
                 //outputWriter.write(participant_id + " " + System.currentTimeMillis() + " " + time + " " + result + "\n");
             }
             catch (Exception e)
@@ -441,6 +466,7 @@ public class AndroidActivity extends ActionBarActivity implements
             }
 //            Intent intent = getIntent();
             if (counter < goal_times.length && run.equals("2") || counter < MainActivity.TRIALS && run.equals("1")) {
+                selectionErrors = 0;
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage("Ready for the next trial?\n\nPlease enter\n" + getTitle(counter));
                 builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
@@ -463,6 +489,8 @@ public class AndroidActivity extends ActionBarActivity implements
             }
             else
             {
+                selectionErrors = 0;
+
                 try {
                     if (outputWriter != null) {
                         outputWriter.close();

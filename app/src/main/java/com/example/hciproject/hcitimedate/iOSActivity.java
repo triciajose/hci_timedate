@@ -53,6 +53,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
     int iMonth = 6;
     String setHour = "12", setMin = "00", setDay = "01", setMonth="07";
     String setAM = "PM";
+    int selectionErrors = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +118,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         if (run.equals("2")) {
             if (request == MainActivity.FORTH_REQUEST){
-                builder.setMessage("TASK 2\n\nFor this task, select the date and time as quickly as possible.  You will have " + MainActivity.TIMEOUT + " seconds, so don’t worry about going back and correcting errors if you make one, just keep going. Don’t worry about selecting a year, you can leave the year defaulted at 2016. Press ok as soon as you’ve finished. You will then hit start and repeat this until you have done a total of " +goal_times.length / 2  + " trials. Once complete, you will be prompted to hand back the phone. ");
+                builder.setMessage("Ready for Round 2?\n\n");
                 AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
                 builder2.setMessage("You're about to start trials on an iOS-like interface. There will be " + goal_times.length / 2 + " trials for this interface.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
                 builder2.setPositiveButton("Start!", new DialogInterface.OnClickListener() {
@@ -133,14 +134,14 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
                 builder2.show();
             }
             else {
-                builder.setMessage("You're about to start timed trials on a new interface. There will be " + goal_times.length / 2 + " trials for this interface and you have "+ MainActivity.TIMEOUT+ " seconds for each trial.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
+                builder.setMessage("You're about to start a new set of trials on a new interface. There will be " + goal_times.length / 2 + " trials for this interface.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
             }
         }
         else
         {
             if (request == MainActivity.FIRST_REQUEST)
             {
-                builder.setMessage("TASK 1\n\nFor this task, select the date and time as accurately as possible. Don’t worry about selecting a year, you can leave the year defaulted at 2016. Press ok as soon as you’ve finished. You will then hit start and repeat this until you have done a total of " + goal_times.length / 2 +" trials.  You will then be prompted to start Task 2.");
+                builder.setMessage("Round 1\n\nSelect the date and time as accurately as possible. Don’t worry about selecting a year, you can leave the year defaulted at 2016. Press ok as soon as you’ve finished. You will then hit start and repeat this until you have done a total of " + goal_times.length / 2 +" trials.  You will then be prompted to start Round 2.");
                 AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
                 builder2.setMessage("You're about to start trials on an iOS-like interface. There will be " + goal_times.length / 2 + " trials for this interface.\n\nReady to begin?\n\nPlease enter\n" + getTitle(counter));
                 builder2.setPositiveButton("Start", new DialogInterface.OnClickListener() {
@@ -244,6 +245,16 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
                             txtDate.setText(getMonth(monthOfYear + 1) + " " + dayOfMonth);
                             setMonth =input_dates[counter].split("-")[0];
                             setDay = input_dates[counter].split("-")[1];
+                            String goalDay = (goal_dates[counter].split("-"))[1];
+                            String goalMonth = (goal_dates[counter].split("-"))[0];
+                            if (!setMonth.equals(goalMonth))
+                            {
+                                selectionErrors++;
+                            }
+                            if (!setDay.equals(goalDay))
+                            {
+                                selectionErrors++;
+                            }
                         }
                     }, 2016, iMonth, iDay);
             datePickerDialog.show();
@@ -329,6 +340,21 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
                             setMin = txtTime.getText().toString().split(" ")[0].split(":")[1];
                             setAM = txtTime.getText().toString().split(" ")[1];
                             input_times[counter] = txtTime.getText().toString();
+                            String goalHour = (goal_times[counter].split(" "))[0].split(":")[0];
+                            String goalMin = (goal_times[counter].split(" "))[0].split(":")[1];
+                            String goalAM = (goal_times[counter].split(" "))[1];
+                            if (!setHour.equals(goalHour))
+                            {
+                                selectionErrors++;
+                            }
+                            if (!setMin.equals(goalMin))
+                            {
+                                selectionErrors++;
+                            }
+                            if (!setAM.equals(goalAM))
+                            {
+                                selectionErrors++;
+                            }
                             Log.v("Counter:",String.valueOf(counter));
                             Log.v("Input Date:", input_times[counter]);
                         }
@@ -350,7 +376,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
             String goalMin = (goal_times[counter].split(" "))[0].split(":")[1];
             String goalDay = (goal_dates[counter].split("-"))[1];
             String goalMonth = (goal_dates[counter].split("-"))[0];
-            String goalAM = (goal_times[counter].split(" "))[1].split(":")[0];
+            String goalAM = (goal_times[counter].split(" "))[1];
             int points = 0;
             if (setHour.equals(goalHour))
             {
@@ -417,7 +443,7 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
                 SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
                 Date resultdate = new Date(System.currentTimeMillis());
                 Log.v("Time:", time);
-                outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time + " " + result + " "+ points+"\n");
+                outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time + " " + result + " "+ points+ " " + selectionErrors + "\n");
                 //outputWriter.write(participant_id + " " + System.currentTimeMillis() + " " + time + " " + result + "\n");
             }
             catch (Exception e)
@@ -445,9 +471,12 @@ public class iOSActivity extends ActionBarActivity implements View.OnClickListen
 
                 txtTime.setText("");
                 txtDate.setText("");
+                selectionErrors = 0;
             }
             else
             {
+                selectionErrors = 0;
+
                 try {
                     if (outputWriter != null) {
                         outputWriter.close();

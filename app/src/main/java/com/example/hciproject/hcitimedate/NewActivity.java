@@ -55,6 +55,8 @@ public class NewActivity extends ActionBarActivity {
     String setHour = "12", setMin = "00", setDay = "01", setMonth="07";
     String setAM = "PM";
 
+    int selectionErrors;
+
 
     DrawingView dv ;
     private Paint mPaint;
@@ -206,6 +208,9 @@ public class NewActivity extends ActionBarActivity {
         mPaint.setStrokeWidth(12);
 
         NewActivity.context = this;
+
+
+        selectionErrors = 0;
 
     }
 
@@ -889,6 +894,9 @@ public class NewActivity extends ActionBarActivity {
                     selections[0] = 11;
                 else
                     selections[0] = (int)(y - topOffset) / (int)monthSpacing;
+
+
+
             }
 //            else if (touchRegion == 2) {
 //                if(y < topOffset)
@@ -905,6 +913,9 @@ public class NewActivity extends ActionBarActivity {
                     selections[1] = daysPerMonth[selections[0]];
                 else
                     selections[1] = (int)((y - topOffset + daysSpacing) / daysSpacing);
+
+
+
             }
             else if (touchRegion == 3) {
                 if(y < topOffset)
@@ -913,6 +924,8 @@ public class NewActivity extends ActionBarActivity {
                     selections[2] = 12;
                 else
                     selections[2] = (int)(y - topOffset) / (int)monthSpacing + 1;
+
+
             }
             else if (touchRegion == 4){
                 if(y < topOffset)
@@ -923,13 +936,22 @@ public class NewActivity extends ActionBarActivity {
 //                    selections[3] = 5*Math.round((int)((y - topOffset + minuteSpacing/2.0) / minuteSpacing)/5);
                 else
                     selections[3] = (int)((y - topOffset + minuteSpacing/2.0) / minuteSpacing);
+
+
+
             }
             else if (touchRegion == 5){
                 if(y <= topOffset + ampmSpacing)
                     selections[4] = 0;
                 else if(y > topOffset + ampmSpacing)
                     selections[4] = 1;
+
+
+
+
             }
+
+
 
         }
 
@@ -986,6 +1008,58 @@ public class NewActivity extends ActionBarActivity {
             }
         }
 
+
+
+        private void testSelection(int updatedSelection)
+        {
+            if(updatedSelection == 1)
+            {
+                String inputSelection = Integer.toString(selections[0] + 1);
+                if(selections[0]/10 == 0)
+                    inputSelection = "0" + inputSelection;
+                System.out.println(inputSelection);
+                if(!inputSelection.equals((goal_dates[counter].split("-"))[0]))
+                    selectionErrors++;
+            }
+            else if(updatedSelection == 2)
+            {
+                String inputSelection = Integer.toString(selections[1]);
+                if(selections[1]/10 == 0)
+                    inputSelection = "0" + inputSelection;
+                System.out.println(inputSelection);
+                if(!inputSelection.equals((goal_dates[counter].split("-"))[1]))
+                    selectionErrors++;
+            }
+            else if(updatedSelection == 3)
+            {
+                String inputSelection = Integer.toString(selections[2]);
+                if(selections[2]/10 == 0)
+                    inputSelection = "0" + inputSelection;
+                System.out.println(inputSelection);
+                if(!inputSelection.equals((goal_times[counter].split(" "))[0].split(":")[0]))
+                    selectionErrors++;
+            }
+            else if(updatedSelection == 4)
+            {
+                String inputSelection = Integer.toString(selections[3]);
+                if(selections[3]/10 == 0)
+                    inputSelection = "0" + inputSelection;
+                System.out.println(inputSelection);
+                if(!inputSelection.equals((goal_times[counter].split(" "))[0].split(":")[1]))
+                    selectionErrors++;
+            }
+            else if(updatedSelection == 5) {
+                String inputSelection = "AM";
+                if (selections[4] == 1)
+                    inputSelection = "PM";
+                System.out.println(inputSelection);
+                if (!inputSelection.equals((goal_times[counter].split(" "))[1]))
+                    selectionErrors++;
+            }
+
+            System.out.println("selectionErrors: " + selectionErrors);
+        }
+
         private void touch_up() {
             if(hasTouched) {
                 mPath.lineTo(mX, mY);
@@ -999,6 +1073,7 @@ public class NewActivity extends ActionBarActivity {
                             okTouch();
                     } else {
                         updateSelection(startTouchY);
+                        testSelection(touchRegion);
                         startChange();
                     }
 
@@ -1006,8 +1081,10 @@ public class NewActivity extends ActionBarActivity {
                     if (touchRegion == 0) {
                         if (testOkButtonTouch(startTouchX, startTouchY))
                             okTouch();
-                    } else
+                    } else {
+                        testSelection(touchRegion);
                         startChange();
+                    }
                 }
 
                 swiping = 0;
@@ -1142,7 +1219,7 @@ public class NewActivity extends ActionBarActivity {
             String goalMin = (goal_times[counter].split(" "))[0].split(":")[1];
             String goalDay = (goal_dates[counter].split("-"))[1];
             String goalMonth = (goal_dates[counter].split("-"))[0];
-            String goalAM = (goal_times[counter].split(" "))[1].split(":")[0];
+            String goalAM = (goal_times[counter].split(" "))[1];
 
             System.out.println("GoalHour: " + goalHour);
             System.out.println("GoalMin: " + goalMin);
@@ -1222,7 +1299,7 @@ public class NewActivity extends ActionBarActivity {
                     Log.v("Result:", "false");
 
                 }
-                outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time.toString() + " " + result + " " + points + "\n");
+                outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time.toString() + " " + result + " " + points + " " + selectionErrors + "\n");
                 //outputWriter.write(participant_id + " " + System.currentTimeMillis() + " " + time + " " + result + "\n");
             } catch (Exception e) {
 

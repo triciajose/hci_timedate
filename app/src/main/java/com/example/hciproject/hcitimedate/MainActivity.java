@@ -25,7 +25,6 @@ public class MainActivity extends ActionBarActivity {
     public final static String GOAL_DATES = "com.mycompany.myfirstapp.DATES";
     public final static String GOAL_TIMES = "com.mycompany.myfirstapp.TIMES";
     public final static String LEFT = "com.mycompany.myfirstapp.LEFT";
-    public final static String TASK_NO = "1";
     public final static int TRIALS = 4;
     public final static int TIMEOUT = 20;
 
@@ -292,33 +291,21 @@ public class MainActivity extends ActionBarActivity {
         Log.v("third", String.valueOf(third));
         startRun("1");
     }
-    public void startTask2(View view) {
-        //order = shuffleArray(order);
-        first = order[0];
-        second = order[1];
-        third = order[2];
-        forth = order[0];
-        fifth = order[1];
-        sixth = order[2];
-        Log.v("first",String.valueOf(first));
-        Log.v("second",String.valueOf(second));
-        Log.v("third",String.valueOf(third));
-        startRun("2");
-    }
+
 
     public void startRun(String run) {
         switch(first) {
             case 1:
                 Log.v("first", "android");
-                startAndroid(FIRST_REQUEST,run);
+                startAndroid(FIRST_REQUEST,"1");
                 break;
             case 2:
                 Log.v("first", "ios");
-                startiOS(FIRST_REQUEST,run);
+                startiOS(FIRST_REQUEST,"1");
                 break;
             case 3:
                 Log.v("first", "new");
-                startNew(FIRST_REQUEST,run);
+                startNew(FIRST_REQUEST,"1");
                 break;
             default:
                 break;
@@ -341,15 +328,15 @@ public class MainActivity extends ActionBarActivity {
 
                     case 1:
                         Log.v("second", "android");
-                        startAndroid(SECOND_REQUEST, run);
+                        startAndroid(SECOND_REQUEST, "1");
                         break;
                     case 2:
                         Log.v("second", "ios");
-                        startiOS(SECOND_REQUEST, run);
+                        startiOS(SECOND_REQUEST, "1");
                         break;
                     case 3:
                         Log.v("third", "new");
-                        startNew(SECOND_REQUEST, run);
+                        startNew(SECOND_REQUEST, "1");
                         break;
                     default:
                         break;
@@ -364,15 +351,15 @@ public class MainActivity extends ActionBarActivity {
                 switch (third) {
                     case 1:
                         Log.v("third", "android");
-                        startAndroid(THIRD_REQUEST, run);
+                        startAndroid(THIRD_REQUEST, "1");
                         break;
                     case 2:
                         Log.v("third", "ios");
-                        startiOS(THIRD_REQUEST, run );
+                        startiOS(THIRD_REQUEST, "1" );
                         break;
                     case 3:
                         Log.v("third", "new");
-                        startNew(THIRD_REQUEST, run);
+                        startNew(THIRD_REQUEST, "1");
                         break;
                     default:
                         break;
@@ -388,15 +375,15 @@ public class MainActivity extends ActionBarActivity {
                 switch (forth) {
                     case 1:
                         Log.v("forth", "android");
-                        startAndroid(FORTH_REQUEST, run);
+                        startAndroid(FORTH_REQUEST, "2");
                         break;
                     case 2:
                         Log.v("forth", "ios");
-                        startiOS(FORTH_REQUEST, run );
+                        startiOS(FORTH_REQUEST, "2" );
                         break;
                     case 3:
                         Log.v("forth", "new");
-                        startNew(FORTH_REQUEST, run);
+                        startNew(FORTH_REQUEST, "2");
                         break;
                     default:
                         break;
@@ -411,15 +398,15 @@ public class MainActivity extends ActionBarActivity {
                 switch (fifth) {
                     case 1:
                         Log.v("fifth", "android");
-                        startAndroid(FIFTH_REQUEST, run);
+                        startAndroid(FIFTH_REQUEST, "2");
                         break;
                     case 2:
                         Log.v("forth", "ios");
-                        startiOS(FIFTH_REQUEST, run );
+                        startiOS(FIFTH_REQUEST, "2" );
                         break;
                     case 3:
                         Log.v("forth", "new");
-                        startNew(FIFTH_REQUEST, run);
+                        startNew(FIFTH_REQUEST, "2");
                         break;
                     default:
                         break;
@@ -434,15 +421,15 @@ public class MainActivity extends ActionBarActivity {
                 switch (sixth) {
                     case 1:
                         Log.v("sixth", "android");
-                        startAndroid(SIXTH_REQUEST, run);
+                        startAndroid(SIXTH_REQUEST, "2");
                         break;
                     case 2:
                         Log.v("sixth", "ios");
-                        startiOS(SIXTH_REQUEST, run );
+                        startiOS(SIXTH_REQUEST, "2" );
                         break;
                     case 3:
                         Log.v("sixth", "new");
-                        startNew(SIXTH_REQUEST, run);
+                        startNew(SIXTH_REQUEST, "2");
                         break;
                     default:
                         break;
@@ -463,6 +450,7 @@ public class MainActivity extends ActionBarActivity {
                         //}
                         // TODO: start timer
                         dialog.dismiss();
+                        //finish();
                     }
                 });
                 builder.create();

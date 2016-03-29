@@ -41,12 +41,12 @@ public class AndroidActivity extends ActionBarActivity implements
         long startTime, endTime;
         private int mYear, mMonth, mDay, mHour, mMinute;
         OutputStreamWriter outputWriter;
-        CountDownTimer ctimer;
+        //CountDownTimer ctimer;
         DatePickerDialog datePickerDialog;
         TimePickerDialog timePickerDialog;
         String participant_id;
         String run = "1";
-        boolean countdownStarted = false;
+        //boolean countdownStarted = false;
         public int request = 0;
         long averageTime = 0;
         int iHour = 12;
@@ -206,10 +206,7 @@ public class AndroidActivity extends ActionBarActivity implements
         if (v == btnDatePicker) {
             // Get Current Date
             startTime = System.nanoTime();
-            if (run.equals("2")) {
-                ctimer = new MyCountDown(MainActivity.TIMEOUT*1000, 1000);
-                countdownStarted = true;
-            }
+
             final Calendar c = Calendar.getInstance();
             mYear = c.get(Calendar.YEAR);
             mMonth = c.get(Calendar.MONTH);
@@ -258,10 +255,7 @@ public class AndroidActivity extends ActionBarActivity implements
             datePickerDialog.show();
         }
         if (v == btnTimePicker) {
-            if (run.equals("2") && countdownStarted == false) {
-                ctimer = new MyCountDown(MainActivity.TIMEOUT*1000, 1000);
-                countdownStarted = true;
-            }
+
             // Get Current Time
             final Calendar c = Calendar.getInstance();
             mHour = c.get(Calendar.HOUR_OF_DAY);
@@ -351,9 +345,7 @@ public class AndroidActivity extends ActionBarActivity implements
             iMin = 0;
             iDay = 1;
             iMonth = 6;
-            if (ctimer!=null) {
-                ctimer.cancel();
-            }
+
             //Check if accurate
             boolean result = false;
             //01-01-2016
@@ -449,7 +441,6 @@ public class AndroidActivity extends ActionBarActivity implements
             }
 //            Intent intent = getIntent();
             if (counter < goal_times.length && run.equals("2") || counter < MainActivity.TRIALS && run.equals("1")) {
-                countdownStarted = false;
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage("Ready for the next trial?\n\nPlease enter\n" + getTitle(counter));
                 builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
@@ -528,112 +519,5 @@ public class AndroidActivity extends ActionBarActivity implements
         String datetime = month + " " + day + ", " + goal_times[counter];
 
         return datetime;
-    }
-
-    private class MyCountDown extends CountDownTimer
-    {
-        public MyCountDown(long millisInFuture, long countDownInterval) {
-            super(millisInFuture, countDownInterval);
-            //frameAnimation.start();
-            start();
-        }
-
-        @Override
-        public void onFinish() {
-            iHour = 12;
-            iMin = 0;
-            iDay = 1;
-            iMonth = 6;
-            secs = MainActivity.TIMEOUT;
-                String goalHour = (goal_times[counter].split(" "))[0].split(":")[0];
-                String goalMin = (goal_times[counter].split(" "))[0].split(":")[1];
-                String goalDay = (goal_dates[counter].split("-"))[1];
-                String goalMonth = (goal_dates[counter].split("-"))[0];
-                String goalAM = (goal_times[counter].split(" "))[1];
-                int points = 0;
-                if (setHour.equals(goalHour))
-                {
-                    points  = points + 1;
-                }
-                if (setMin.equals(goalMin))
-                {
-                    points = points + 1;
-                }
-                if (setDay.equals(goalDay))
-                {
-                    points = points + 1;
-                }
-                if (setMonth.equals(goalMonth))
-                {
-                    points = points + 1;
-                }
-                if (setAM.equals(goalAM))
-                {
-                    points = points + 1;
-                }
-                boolean result = false;
-                double time = 10.1;
-                try {
-                    SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
-                    Date resultdate = new Date(System.currentTimeMillis());
-                    outputWriter.append(participant_id + " " + sdf.format(resultdate) + " " + time + " " + result + " " + points + "\n");
-                    //outputWriter.write("!~!" + participant_id + " " + System.currentTimeMillis() + " " + time + " " + result + "\n");
-                }
-                catch (Exception e)
-                {
-
-                }
-                if (datePickerDialog != null) {
-                    datePickerDialog.dismiss();
-                }
-                if (timePickerDialog!=null)
-                {
-                    timePickerDialog.dismiss();
-                }//timePickerDialog.dismiss();
-            counter++;
-            if (counter < goal_times.length) {
-                countdownStarted = false;
-                AlertDialog.Builder builder = new AlertDialog.Builder(AndroidActivity.this);
-                builder.setMessage("Ready for the next trial?\n\nPlease enter\n" +getTitle(counter));
-                builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //startTime = System.nanoTime();
-                        //if (run.equals("2")) {
-                        //    ctimer = new MyCountDown(11000, 1000);
-                        //}
-                        // TODO: start timer
-                        dialog.dismiss();
-                    }
-                });
-                builder.create();
-                builder.show();
-
-                getSupportActionBar().setTitle(getTitle(counter));
-
-                txtTime.setText("");
-                txtDate.setText("");
-            }
-            else
-            {
-                try {
-                    if (outputWriter != null) {
-                        outputWriter.close();
-                    }
-                }
-                catch (IOException e)
-                {
-
-                }
-//                Intent intent = new Intent();
-                setResult(RESULT_OK);
-                finish();
-            }
-        }
-
-        @Override
-        public void onTick(long duration) {
-            //cd.setText(String.valueOf(secs));
-            secs = secs - 1;
-        }
     }
 }
